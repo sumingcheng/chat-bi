@@ -1,5 +1,5 @@
 from app.journal.logging_config import logger
-from pymilvus import connections, FieldSchema, CollectionSchema, DataType, Collection
+from pymilvus import connections, FieldSchema, CollectionSchema, DataType, Collection, utility
 import os
 from app.utils.embedding_model import get_text_embedding
 
@@ -13,7 +13,7 @@ def connect_milvus():
 
 # 检查集合是否存在
 def has_collection(name):
-    return Collection.exists(name)
+    return utility.has_collection(name)
 
 
 # 创建或获取集合
