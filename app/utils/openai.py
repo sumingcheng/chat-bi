@@ -4,10 +4,12 @@ import re
 import openai
 from openai import OpenAIError
 
+from config.main import Config
+
 
 # 将用户查询解析为SQL查询
 def parse_query_to_sql(user_query):
-    openai.api_key = os.getenv('OPENAI_API_KEY')
+    openai.api_key = Config.OPENAI_API_KEY
 
     if not openai.api_key:
         raise ValueError("未找到 OpenAI API 密钥，请设置 OPENAI_API_KEY 环境变量。")

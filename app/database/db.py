@@ -2,15 +2,17 @@ import os
 from app.journal.logging_config import logger
 import mysql.connector
 
+from config.main import Config
+
 
 # 数据库连接
 def get_db_connection():
     connection = mysql.connector.connect(
-        host=os.getenv('DB_HOST', 'localhost'),
-        port=int(os.getenv('DB_PORT', 13306)),
-        user=os.getenv('DB_USER', 'root'),
-        password=os.getenv('DB_PASSWORD', ''),
-        database=os.getenv('DB_NAME', 'chat-bi')
+        host=Config.DB_HOST,
+        port=int(Config.DB_PORT),
+        user=Config.DB_USER,
+        password=Config.DB_PASSWORD,
+        database=Config.DB_NAME
     )
     return connection
 

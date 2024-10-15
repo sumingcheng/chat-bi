@@ -163,5 +163,4 @@ cython_debug/
 project-env/
 /venv/
 fastapi-demo/project-env/
-.env.development
-.env.development
+start-dev.sh

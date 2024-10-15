@@ -1,3 +1,5 @@
+import os
+
 from fastapi import APIRouter, HTTPException
 from app.handlers.models import QueryRequest
 from app.utils.openai import parse_query_to_sql
@@ -6,9 +8,7 @@ from app.database.db import execute_sql_query
 from app.handlers.formatting import format_for_echarts
 from app.utils.milvus import connect_milvus, get_or_create_collection, insert_data, search_similar_question
 from app.journal.logging_config import logger
-from app.initialize.environment import load_environment
 
-ENV = load_environment()
 router = APIRouter()
 
 
@@ -40,7 +40,7 @@ def handle_query(request: QueryRequest):
     except Exception as e:
         logger.error(f"处理查询 '{request.user_input}' 时出错: {e}")
         # 开发环境返回详细错误信息
-        if ENV == 'development':
+        if os.getenv('ENVIRONMENT') == 'development':
             raise HTTPException(status_code=500, detail=str(e))
         else:
             raise HTTPException(status_code=500, detail="服务器内部错误，请稍后重试。")

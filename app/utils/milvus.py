@@ -1,13 +1,13 @@
 from app.journal.logging_config import logger
 from pymilvus import connections, FieldSchema, CollectionSchema, DataType, Collection, utility
-import os
 from app.utils.embedding_model import get_text_embedding
+from config.main import Config
 
 
 # 连接到 Milvus
 def connect_milvus():
-    host = os.getenv('MILVUS_HOST', 'localhost')
-    port = os.getenv('MILVUS_PORT', '19530')
+    host = Config.MILVUS_HOST
+    port = Config.MILVUS_PORT
     connections.connect(alias='default', host=host, port=port)
 
 

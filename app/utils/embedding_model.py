@@ -1,8 +1,10 @@
 import os
 import openai
 
+from config.main import Config
+
 # 设置 OpenAI API 密钥
-openai.api_key = os.getenv('OPENAI_API_KEY')
+openai.api_key = Config.OPENAI_API_KEY
 
 
 def get_text_embedding(text):
