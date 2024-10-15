@@ -1,7 +1,7 @@
-from .logging_config import logger
+from app.journal.logging_config import logger
 from pymilvus import connections, FieldSchema, CollectionSchema, DataType, Collection
 import os
-from .embedding_model import get_text_embedding
+from app.utils.embedding_model import get_text_embedding
 
 
 # 连接到 Milvus
