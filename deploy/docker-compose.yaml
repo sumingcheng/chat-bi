@@ -1,0 +1,16 @@
+services:
+  app:
+    image: chat-bi:v1.0.0
+    container_name: chat-bi
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_HOST=your_db_host
+      - DB_PORT=your_db_port
+      - DB_USER=your_db_user
+      - DB_PASSWORD=your_db_password
+      - DB_NAME=your_db_name
+      - MILVUS_HOST=your_milvus_host
+      - MILVUS_PORT=your_milvus_port
+      - OPENAI_API_KEY=your_openai_api_key
+    restart: unless-stopped

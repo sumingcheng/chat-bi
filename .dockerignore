@@ -6,3 +6,5 @@ __pycache__
 *.pyd
 .dockerignore
 .gitignore
+start-dev.sh
+docker-compose-dev.yaml

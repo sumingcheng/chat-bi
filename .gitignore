@@ -164,3 +164,4 @@ project-env/
 /venv/
 fastapi-demo/project-env/
 start-dev.sh
+docker-compose-dev.yaml
