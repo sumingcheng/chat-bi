@@ -27,4 +27,7 @@ reset:
 	-@$(MAKE) build
 	-@cd deploy && docker-compose up -d
 
-.PHONY: build build-nocache build-ufw run run-dev reset
+ddl:
+	bash bin/get_db_ddl.sh
+
+.PHONY: build build-nocache build-ufw run run-dev reset ddl
