@@ -14,7 +14,7 @@ if not logger.handlers:
     os.makedirs(log_dir, exist_ok=True)
 
     # 设置日志文件路径
-    log_file = os.path.join(log_dir, 'app.log')
+    log_file = os.path.join(log_dir, 'chat-bi.log')
 
     # 创建文件处理器，设置日志滚动：日志文件最大 5MB，保留 5 个备份
     file_handler = RotatingFileHandler(
@@ -28,7 +28,7 @@ if not logger.handlers:
 
     # 设置日志格式
     formatter = logging.Formatter(
-        '%(asctime)s - %(name)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s'
+        '%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s'
     )
     file_handler.setFormatter(formatter)
     console_handler.setFormatter(formatter)
