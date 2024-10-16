@@ -17,7 +17,7 @@ RUN if [ "$USE_CHINA_MIRROR" = "true" ] ; then \
 # 复制项目文件到容器
 COPY . .
 
-# 暴露8000端口
+# 暴露13000端口
 EXPOSE 13000
 
 # 运行应用程序
