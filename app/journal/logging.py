@@ -24,7 +24,7 @@ if not logger.handlers:
 
     # 创建控制台处理器
     console_handler = logging.StreamHandler()
-    console_handler.setLevel(logging.WARNING)
+    console_handler.setLevel(logging.INFO)
 
     # 设置日志格式
     formatter = logging.Formatter(
