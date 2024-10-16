@@ -1,33 +1,24 @@
-FROM continuumio/miniconda3:4.12.0 AS builder
+FROM python:3.10.13-slim
 
-WORKDIR /app
-
-# Optional use of a mirror for China
+# 可选：使用中国镜像源
 ARG USE_CHINA_MIRROR=false
-COPY environment.yml /app/environment.yml
-
-RUN if [ "$USE_CHINA_MIRROR" = "true" ] ; then \
-      conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main && \
-      conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free && \
-      conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/cloud/conda-forge && \
-      conda config --set show_channel_urls yes ; \
-    fi && \
-    conda env create -f /app/environment.yml && \
-    conda clean -a && \
-    find /opt/conda/ -follow -type f -name '*.a' -delete && \
-    find /opt/conda/ -follow -type f -name '*.pyc' -delete && \
-    find /opt/conda/ -follow -type f -name '*.js.map' -delete && \
-    rm -rf /opt/conda/pkgs/*
-
-FROM continuumio/miniconda3:4.12.0
-#ENV PYTHONDONTWRITEBYTECODE=1
-COPY --from=builder /opt/conda /opt/conda
 
 WORKDIR /app
+
+# 复制requirements.txt到工作目录
+COPY requirements.txt .
+
+# 如果需要，配置pip使用中国镜像源，并安装依赖
+RUN if [ "$USE_CHINA_MIRROR" = "true" ] ; then \
+        pip config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple ; \
+    fi && \
+    pip install --no-cache-dir -r requirements.txt
+
+# 复制项目文件到容器
 COPY . .
 
-EXPOSE 8000
+# 暴露8000端口
+EXPOSE 13000
 
-ENTRYPOINT ["conda", "run", "-n", "minio-upload", "--no-capture-output"]
-
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# 运行应用程序
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "13000", "--reload"]
