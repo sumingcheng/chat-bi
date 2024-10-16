@@ -1,6 +1,6 @@
 import os
 from fastapi import APIRouter, HTTPException
-from app.handlers.models import QueryRequest
+from app.models.schemas import QueryRequest
 from app.handlers.query_handler import process_query
 
 router = APIRouter()

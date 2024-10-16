@@ -1,4 +1,4 @@
-from app.main import app
+from app.chat_bi import app
 import uvicorn
 
 if __name__ == "__main__":
