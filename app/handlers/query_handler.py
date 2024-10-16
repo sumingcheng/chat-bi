@@ -1,7 +1,6 @@
 from app.utils.openai import parse_query_to_sql
 from app.database.sql_validation import validate_sql_query
 from app.database.mysql import execute_sql_query
-from app.handlers.formatting import format_for_echarts
 from app.utils.milvus import connect_milvus, get_or_create_collection, insert_data, search_similar_question
 from app.journal.logging import logger
 
@@ -45,3 +44,14 @@ def process_query(user_input):
         logger.error(f"处理查询 '{user_input}' 时出错: {e}")
         # 抛出异常，由调用者处理
         raise e
+
+
+# 将结果格式化为 echarts 可用的数据格式
+def format_for_echarts(data):
+    columns = data['columns']
+    rows = data['data']
+    echarts_data = {
+        'columns': columns,
+        'rows': [list(row) for row in rows]
+    }
+    return echarts_data
