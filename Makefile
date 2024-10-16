@@ -16,6 +16,9 @@ build-nocache:
 run:
 	cd deploy && docker-compose up -d
 
+run-dev:
+	cd deploy && docker-compose -f docker-compose-dev.yaml up -d
+
 # 重头再来
 reset:
 	-@git pull
@@ -24,4 +27,4 @@ reset:
 	-@$(MAKE) build
 	-@cd deploy && docker-compose up -d
 
-.PHONY: build build-nocache build-ufw reset run
+.PHONY: build build-nocache build-ufw run run-dev reset
