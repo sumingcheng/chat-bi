@@ -1,5 +1,5 @@
 import os
-from app.journal.logging_config import logger
+from app.journal.logging import logger
 import mysql.connector
 
 from config.main import Config
