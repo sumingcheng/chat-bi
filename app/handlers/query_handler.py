@@ -1,6 +1,6 @@
 from app.utils.openai import parse_query_to_sql
 from app.database.sql_validation import validate_sql_query
-from app.database.db import execute_sql_query
+from app.database.mysql import execute_sql_query
 from app.handlers.formatting import format_for_echarts
 from app.utils.milvus import connect_milvus, get_or_create_collection, insert_data, search_similar_question
 from app.journal.logging import logger

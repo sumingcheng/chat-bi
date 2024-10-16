@@ -1,9 +1,9 @@
-import os
-from app.journal.logging import logger
 import re
 import openai
 from openai import OpenAIError
 
+from app.utils.prompts import database_schema
+from app.journal.logging import logger
 from config.main import Config
 
 
@@ -14,32 +14,19 @@ def parse_query_to_sql(user_query):
     if not openai.api_key:
         raise ValueError("未找到 OpenAI API 密钥，请设置 OPENAI_API_KEY 环境变量。")
 
-    # 提供数据库结构信息
-    database_schema = """
-    数据库包含以下表：
-
-    表名：products
-    字段：
-      - id (INT, PRIMARY KEY)
-      - name (VARCHAR(255))
-
-    表名：sales
-    字段：
-      - id (INT, PRIMARY KEY)
-      - product_id (INT)
-      - amount (DECIMAL(10,2))
-      - date (DATE)
-    """
-
     messages = [
-        {"role": "system",
-         "content": f"你是一个将自然语言查询直接转换为针对 MySQL 数据库的 SQL 查询的助手。请只返回 SQL 查询，不要添加任何额外的说明、解释或文本。\n\n数据库结构：\n{database_schema}"},
-        {"role": "user", "content": f"请将以下自然语言查询直接转换为 SQL 查询，只返回 SQL 语句：\n\n\"{user_query}\""}
-    ]
+        {
+            "role": "system",
+            "content": f"你是一个将自然语言查询直接转换为针对 MySQL 数据库的 SQL 查询的大师。请只返回 SQL 查询，并保证 SQL 语句是正确的，数据库使用的是 only_full_group_by 模式，不要添加任何额外的说明、解释或文本。\n\n数据库DDL如下：\n{database_schema}"
+        },
+        {
+            "role": "user",
+            "content": f"请将以下自然语言查询直接转换为 SQL 查询，只返回 SQL 语句：\n\n\"{user_query}\""
+        }]
 
     try:
         response = openai.ChatCompletion.create(
-            model='gpt-3.5-turbo',  # 或 'gpt-4'，如果有权限
+            model='gpt-3.5-turbo',
             messages=messages,
             temperature=0,
             max_tokens=150,

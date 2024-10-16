@@ -1,4 +1,3 @@
-import os
 from app.journal.logging import logger
 import mysql.connector
 
