@@ -1,4 +1,3 @@
-# 使用基础 Python 镜像
 FROM python:3.10.13-slim as builder
 
 # 可选：使用中国镜像源
