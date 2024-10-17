@@ -22,10 +22,10 @@ run-dev:
 # 重头再来
 reset:
 	-@git pull
-	-@cd deploy && docker-compose down
+	-@cd deploy && docker-compose -f docker-compose-dev.yaml down
 	-@docker rmi ${docker_image_name}:${docker_image_tag} || true
 	-@$(MAKE) build
-	-@cd deploy && docker-compose up -d
+	-@cd deploy && docker-compose -f docker-compose-dev.yaml up -d
 
 ddl:
 	bash bin/get_db_ddl.sh

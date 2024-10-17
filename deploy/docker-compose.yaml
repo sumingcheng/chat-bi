@@ -1,9 +1,9 @@
 services:
-  app:
+  chat-bi:
     image: chat-bi:v1.0.0
     container_name: chat-bi
     ports:
-      - "13000:8000"
+      - "13000:13000"
     environment:
       - DB_HOST=172.22.220.64
       - DB_PORT=3306
