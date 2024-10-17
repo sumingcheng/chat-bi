@@ -1,19 +1,34 @@
 from app.journal.logging import logger
+from config.main import Config
 import mysql.connector
 
-from config.main import Config
+
+dbconfig = {
+    "host": Config.DB_HOST,
+    "port": int(Config.DB_PORT),
+    "user": Config.DB_USER,
+    "password": Config.DB_PASSWORD,
+    "database": Config.DB_NAME
+}
+
+pool_name = "mysql_pool"
+pool_size = 5
+# 创建连接池
+pool = mysql.connector.pooling.MySQLConnectionPool(
+    pool_name=pool_name,
+    pool_size=pool_size,
+    **dbconfig
+)
 
 
-# 数据库连接
+# 从连接池获取连接
 def get_db_connection():
-    connection = mysql.connector.connect(
-        host=Config.DB_HOST,
-        port=int(Config.DB_PORT),
-        user=Config.DB_USER,
-        password=Config.DB_PASSWORD,
-        database=Config.DB_NAME
-    )
-    return connection
+    try:
+        connection = pool.get_connection()
+        return connection
+    except Exception as e:
+        logger.error(f"获取数据库连接失败: {e}")
+        raise
 
 
 # 执行 SQL 查询并返回结果
