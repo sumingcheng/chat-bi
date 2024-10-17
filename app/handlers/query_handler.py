@@ -17,6 +17,7 @@ def process_query(user_input):
 
         if search_results and len(search_results[0]) > 0:
             top_hit = search_results[0][0]
+            logger.info(f"相似度得分：{top_hit.score}")
             if top_hit.score > 0.9:
                 # 使用相似问题的 SQL 查询
                 sql_query = top_hit.entity.get("sql_query")

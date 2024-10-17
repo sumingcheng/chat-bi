@@ -25,7 +25,6 @@ def create_index(collection):
     collection.create_index(field_name="embedding", index_params=index_params)
 
 
-
 def get_or_create_collection():
     collection_name = 'question_embedding_collection'
 
@@ -40,7 +39,7 @@ def get_or_create_collection():
         schema = CollectionSchema(fields, description="Question embeddings")
         collection = Collection(collection_name, schema=schema)
 
-        # 创建索引
+        # 创建索引，没有索引的向量搜索会非常慢。创建索引可以显著提高搜索性能
         create_index(collection)
     else:
         collection = Collection(collection_name)
@@ -53,7 +52,6 @@ def get_or_create_collection():
     # 加载集合和索引
     collection.load()
     return collection
-
 
 
 # 插入数据
@@ -77,6 +75,7 @@ def insert_data(collection, questions, sql_queries):
         embeddings,
         valid_sql_queries
     ]
+
     collection.insert(data)
     collection.load()
 
@@ -91,7 +90,12 @@ def search_similar_question(collection, user_question, top_k=1):
     user_embedding = [user_embedding]
 
     # 执行向量搜索
-    search_params = {"metric_type": "COSINE", "params": {"nprobe": 10}}
+    search_params = {
+        "metric_type": "COSINE",
+        "params": {
+            "nprobe": 10  # 取 nlist 的 1% 到 10%。
+        }
+    }
 
     results = collection.search(
         data=user_embedding,

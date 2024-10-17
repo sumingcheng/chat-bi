@@ -20,6 +20,7 @@ if not logger.handlers:
     file_handler = RotatingFileHandler(
         log_file, maxBytes=5 * 1024 * 1024, backupCount=5, encoding='utf-8'
     )
+    # 文件记录级别
     file_handler.setLevel(logging.INFO)
 
     # 创建控制台处理器
@@ -31,6 +32,7 @@ if not logger.handlers:
         '%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s'
     )
     file_handler.setFormatter(formatter)
+    # 控制台日志级别
     console_handler.setFormatter(formatter)
 
     # 添加处理器到记录器

@@ -2,7 +2,6 @@ from app.journal.logging import logger
 from config.main import Config
 import mysql.connector
 
-
 dbconfig = {
     "host": Config.DB_HOST,
     "port": int(Config.DB_PORT),
@@ -34,14 +33,14 @@ def get_db_connection():
 # 执行 SQL 查询并返回结果
 def execute_sql_query(sql_query):
     try:
-        conn = get_db_connection()
-        cursor = conn.cursor()
+        connection = get_db_connection()
+        cursor = connection.cursor()
         logger.info(f"执行 SQL 查询✔: {sql_query}")
         cursor.execute(sql_query)
         columns = cursor.column_names
         results = cursor.fetchall()
         cursor.close()
-        conn.close()
+        connection.close()
         return {"columns": columns, "data": results}
     except mysql.connector.Error as err:
         logger.error(f"数据库错误: {err}")

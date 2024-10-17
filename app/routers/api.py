@@ -16,7 +16,6 @@ def handle_query(request: QueryRequest):
         return result
 
     except Exception as e:
-        # 日志已经在处理函数中记录，这里只需返回错误响应
         # 开发环境返回详细错误信息
         if os.getenv('ENVIRONMENT') == 'development':
             raise HTTPException(status_code=500, detail=str(e))

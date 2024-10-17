@@ -1,4 +1,3 @@
-import os
 import openai
 
 from config.main import Config
