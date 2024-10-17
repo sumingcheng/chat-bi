@@ -165,3 +165,4 @@ project-env/
 fastapi-demo/project-env/
 start-dev.sh
 docker-compose-dev.yaml
+/deploy/volumes/

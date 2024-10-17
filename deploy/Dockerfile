@@ -5,7 +5,6 @@ ARG USE_CHINA_MIRROR=false
 ENV PIP_ROOT_USER_ACTION=ignore
 
 WORKDIR /chat-bi
-
 COPY requirements.txt .
 
 # 配置 pip 使用中国镜像源（如果需要），并安装依赖项
@@ -23,4 +22,4 @@ WORKDIR /chat-bi
 
 EXPOSE 13000
 
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "13000", "--reload"]
+CMD ["python", "main.py"]
