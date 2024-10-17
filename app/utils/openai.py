@@ -10,22 +10,28 @@ from config.main import Config
 def parse_query_to_sql(user_query):
     openai.api_key = Config.OPENAI_API_KEY
 
-    if not openai.api_key:
-        raise ValueError("未找到 OpenAI API 密钥，请设置 OPENAI_API_KEY 环境变量。")
-
     messages = [
         {
             "role": "system",
-            "content": f"你是一个将自然语言查询直接转换为针对 MySQL 数据库的 SQL 查询的大师。请只返回 SQL 查询，并保证 SQL 语句是正确的，数据库使用的是 only_full_group_by 模式，不要添加任何额外的说明、解释或文本。\n\n数据库DDL如下：\n{database_schema}"
+            "content": f"""
+                你是一个将自然语言查询直接转换为针对 MySQL 数据库的 SQL 查询的大师。请只返回 SQL 查询，并保证 SQL 语句是正确的，数据库使用的是 only_full_group_by 模式，不要添加任何额外的说明、解释或文本。
+                \n\n数据库DDL如下：\n{database_schema}
+                要求：
+                - 查询应包含必要的表关联（如需要产品名称，则关联 `product` 表）。
+                - SELECT 子句中应包括所有相关字段（如 `product_name`）。
+                - 确保语法正确，可在 MySQL 中执行。
+            """
         },
         {
             "role": "user",
-            "content": f"请将以下自然语言查询直接转换为 SQL 查询，只返回 SQL 语句：\n\n\"{user_query}\""
+            "content": f"请将以下问题直接转换为 SQL 查询\n\n\"{user_query}\""
         }]
+
+    logger.info(f"用户问题：{user_query}")
 
     try:
         response = openai.ChatCompletion.create(
-            model='gpt-3.5-turbo',
+            model='gpt-4o',
             messages=messages,
             temperature=0,
             max_tokens=150,

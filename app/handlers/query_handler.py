@@ -17,7 +17,7 @@ def process_query(user_input):
 
         if search_results and len(search_results[0]) > 0:
             top_hit = search_results[0][0]
-            if top_hit.score > 0.8:
+            if top_hit.score > 0.9:
                 # 使用相似问题的 SQL 查询
                 sql_query = top_hit.entity.get("sql_query")
                 logger.info(f"使用相似问题的 SQL 查询: {sql_query}")
@@ -38,7 +38,7 @@ def process_query(user_input):
 
         data = execute_sql_query(sql_query)
         echarts_data = format_for_echarts(data)
-        return {"echarts_data": echarts_data}
+        return {"data": echarts_data}
 
     except Exception as e:
         logger.error(f"处理查询 '{user_input}' 时出错: {e}")
@@ -50,8 +50,5 @@ def process_query(user_input):
 def format_for_echarts(data):
     columns = data['columns']
     rows = data['data']
-    echarts_data = {
-        'columns': columns,
-        'rows': [list(row) for row in rows]
-    }
+    echarts_data = [dict(zip(columns, row)) for row in rows]
     return echarts_data

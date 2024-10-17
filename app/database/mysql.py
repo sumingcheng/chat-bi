@@ -21,7 +21,7 @@ def execute_sql_query(sql_query):
     try:
         conn = get_db_connection()
         cursor = conn.cursor()
-        logger.info(f"执行 SQL 查询: {sql_query}")
+        logger.info(f"执行 SQL 查询✔: {sql_query}")
         cursor.execute(sql_query)
         columns = cursor.column_names
         results = cursor.fetchall()
