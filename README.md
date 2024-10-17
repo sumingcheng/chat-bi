@@ -8,7 +8,7 @@
 
 ## 架构图
 
-![架构图](./images/chat-bi.svg)
+![架构图](./images/chat-bi.drawio)
 
 ## 本地开发
 
