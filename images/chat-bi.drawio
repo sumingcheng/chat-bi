@@ -4,87 +4,87 @@
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
-                <mxCell id="34" value="" style="rounded=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+                <mxCell id="34" value="" style="rounded=0;whiteSpace=wrap;html=1;labelBackgroundColor=none;" vertex="1" parent="1">
                     <mxGeometry x="120" y="20" width="580" height="780" as="geometry"/>
                 </mxCell>
-                <mxCell id="9" value="" style="edgeStyle=none;html=1;" parent="1" source="2" target="3" edge="1">
+                <mxCell id="9" value="" style="edgeStyle=none;html=1;labelBackgroundColor=none;" parent="1" source="2" target="3" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="2" value="用户输入问题" style="rounded=1;whiteSpace=wrap;html=1;flipV=0;flipH=1;" parent="1" vertex="1">
+                <mxCell id="2" value="用户输入问题" style="rounded=1;whiteSpace=wrap;html=1;flipV=0;flipH=1;labelBackgroundColor=none;" parent="1" vertex="1">
                     <mxGeometry x="226" y="50" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="16" value="" style="edgeStyle=none;html=1;" parent="1" source="3" target="15" edge="1">
+                <mxCell id="16" value="" style="edgeStyle=none;html=1;labelBackgroundColor=none;" parent="1" source="3" target="15" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="3" value="查询余弦相似度&lt;br&gt;Milvus" style="rounded=1;whiteSpace=wrap;html=1;flipV=0;flipH=1;" parent="1" vertex="1">
+                <mxCell id="3" value="查询余弦相似度&lt;br&gt;Milvus" style="rounded=1;whiteSpace=wrap;html=1;flipV=0;flipH=1;labelBackgroundColor=none;" parent="1" vertex="1">
                     <mxGeometry x="226" y="146" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="32" style="edgeStyle=none;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="4" target="22" edge="1">
+                <mxCell id="32" style="edgeStyle=none;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=none;" parent="1" source="4" target="22" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <Array as="points">
                             <mxPoint x="546" y="450"/>
                         </Array>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="4" value="模型生成SQL" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                <mxCell id="4" value="模型生成SQL" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;" parent="1" vertex="1">
                     <mxGeometry x="486" y="241" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="12" value="" style="edgeStyle=none;html=1;" parent="1" source="5" target="6" edge="1">
+                <mxCell id="12" value="" style="edgeStyle=none;html=1;labelBackgroundColor=none;" parent="1" source="5" target="6" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="5" value="参数提取" style="rounded=1;whiteSpace=wrap;html=1;flipV=0;flipH=1;" parent="1" vertex="1">
+                <mxCell id="5" value="参数提取" style="rounded=1;whiteSpace=wrap;html=1;flipV=0;flipH=1;labelBackgroundColor=none;" parent="1" vertex="1">
                     <mxGeometry x="226" y="337" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="24" value="" style="edgeStyle=none;html=1;" parent="1" source="6" target="22" edge="1">
+                <mxCell id="24" value="" style="edgeStyle=none;html=1;labelBackgroundColor=none;" parent="1" source="6" target="22" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="6" value="填充SQL查询模板" style="rounded=1;whiteSpace=wrap;html=1;flipV=0;flipH=1;" parent="1" vertex="1">
+                <mxCell id="6" value="填充SQL查询模板" style="rounded=1;whiteSpace=wrap;html=1;flipV=0;flipH=1;labelBackgroundColor=none;" parent="1" vertex="1">
                     <mxGeometry x="226" y="433" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="14" value="" style="edgeStyle=none;html=1;" parent="1" source="7" target="8" edge="1">
+                <mxCell id="14" value="" style="edgeStyle=none;html=1;labelBackgroundColor=none;" parent="1" source="7" target="8" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="33" value="" style="edgeStyle=none;html=1;" parent="1" source="7" target="20" edge="1">
+                <mxCell id="33" value="" style="edgeStyle=none;html=1;labelBackgroundColor=none;" parent="1" source="7" target="20" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="7" value="执行SQL" style="rounded=1;whiteSpace=wrap;html=1;flipV=0;flipH=1;" parent="1" vertex="1">
+                <mxCell id="7" value="执行SQL" style="rounded=1;whiteSpace=wrap;html=1;flipV=0;flipH=1;labelBackgroundColor=none;" parent="1" vertex="1">
                     <mxGeometry x="226" y="624" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="8" value="返回可视化数据" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                <mxCell id="8" value="返回可视化数据" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;" parent="1" vertex="1">
                     <mxGeometry x="486" y="624" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="17" value="" style="edgeStyle=none;html=1;" parent="1" source="15" target="5" edge="1">
+                <mxCell id="17" value="" style="edgeStyle=none;html=1;labelBackgroundColor=none;" parent="1" source="15" target="5" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="18" value="" style="edgeStyle=none;html=1;" parent="1" source="15" target="4" edge="1">
+                <mxCell id="18" value="" style="edgeStyle=none;html=1;labelBackgroundColor=none;" parent="1" source="15" target="4" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="19" value="未匹配到" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="18" vertex="1" connectable="0">
+                <mxCell id="19" value="未匹配到" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;" parent="18" vertex="1" connectable="0">
                     <mxGeometry x="-0.419" relative="1" as="geometry">
                         <mxPoint x="13" as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="15" value="匹配最佳&lt;br&gt;SQL模板" style="rhombus;whiteSpace=wrap;html=1;flipV=0;flipH=1;" parent="1" vertex="1">
+                <mxCell id="15" value="匹配最佳&lt;br&gt;SQL模板" style="rhombus;whiteSpace=wrap;html=1;flipV=0;flipH=1;labelBackgroundColor=none;" parent="1" vertex="1">
                     <mxGeometry x="221" y="231" width="130" height="80" as="geometry"/>
                 </mxCell>
-                <mxCell id="20" value="存储SQL模板" style="whiteSpace=wrap;html=1;rounded=1;flipV=0;flipH=1;" parent="1" vertex="1">
+                <mxCell id="20" value="存储SQL模板" style="whiteSpace=wrap;html=1;rounded=1;flipV=0;flipH=1;labelBackgroundColor=none;" parent="1" vertex="1">
                     <mxGeometry x="226" y="720" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="26" value="" style="edgeStyle=none;html=1;" parent="1" source="22" target="7" edge="1">
+                <mxCell id="26" value="" style="edgeStyle=none;html=1;labelBackgroundColor=none;" parent="1" source="22" target="7" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="28" value="" style="edgeStyle=none;html=1;" parent="1" source="22" target="27" edge="1">
+                <mxCell id="28" value="" style="edgeStyle=none;html=1;labelBackgroundColor=none;" parent="1" source="22" target="27" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
-                <mxCell id="31" value="不安全" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" parent="28" vertex="1" connectable="0">
+                <mxCell id="31" value="不安全" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;" parent="28" vertex="1" connectable="0">
                     <mxGeometry x="-0.2559" relative="1" as="geometry">
                         <mxPoint x="10" as="offset"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="22" value="检查SQL注入" style="rhombus;whiteSpace=wrap;html=1;flipV=0;flipH=1;" parent="1" vertex="1">
+                <mxCell id="22" value="检查SQL注入" style="rhombus;whiteSpace=wrap;html=1;flipV=0;flipH=1;labelBackgroundColor=none;" parent="1" vertex="1">
                     <mxGeometry x="221" y="519" width="130" height="80" as="geometry"/>
                 </mxCell>
-                <mxCell id="27" value="前端报错" style="rounded=1;whiteSpace=wrap;html=1;" parent="1" vertex="1">
+                <mxCell id="27" value="前端报错" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;" parent="1" vertex="1">
                     <mxGeometry x="486" y="530" width="120" height="60" as="geometry"/>
                 </mxCell>
             </root>
