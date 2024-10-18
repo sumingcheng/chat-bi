@@ -41,7 +41,19 @@ pip install -r requirements.txt
 
 #### 配置MySQL和Milvus
 
-参考`deploy/docker-compose.yaml`的内容一键启动
+参考`deploy/docker-compose.yaml`的内容一键启动，注意提前修改环境变量
+```yaml
+      DB_HOST=mysql
+      DB_PORT=3306
+      DB_USER=root
+      DB_PASSWORD=admin123456
+      DB_NAME=chat_bi
+      MILVUS_HOST=
+      MILVUS_PORT=19530
+      OPENAI_API_KEY=
+      HTTP_PROXY=最好配置一下，要不然请求不到 openai
+      HTTPS_PROXY=最好配置一下，要不然请求不到 openai
+```
 
 #### 运行应用程序
 
