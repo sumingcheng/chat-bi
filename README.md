@@ -15,8 +15,6 @@
 - **Python 3.x**
 - **MySQL** 数据库
 - **Milvus** 向量数据库
-- **pip** 包管理器
-- **Git** 版本控制系统
 
 ### 安装步骤
 
@@ -91,7 +89,7 @@ git push origin feature/your-feature-name
 
 ## 许可证
 
-本项目采用 **Apache License**。请参阅 [LICENSE](LICENSE) 文件了解详情。
+本项目采用 **Apache License**。请参阅 [LICENSE](./LICENSE) 文件了解详情。
 
 ## 致谢
 
