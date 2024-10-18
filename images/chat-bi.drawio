@@ -4,7 +4,7 @@
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
-                <mxCell id="34" value="" style="rounded=0;whiteSpace=wrap;html=1;labelBackgroundColor=none;" vertex="1" parent="1">
+                <mxCell id="34" value="" style="rounded=0;whiteSpace=wrap;html=1;labelBackgroundColor=none;" parent="1" vertex="1">
                     <mxGeometry x="120" y="20" width="580" height="780" as="geometry"/>
                 </mxCell>
                 <mxCell id="9" value="" style="edgeStyle=none;html=1;labelBackgroundColor=none;" parent="1" source="2" target="3" edge="1">
@@ -19,11 +19,12 @@
                 <mxCell id="3" value="查询余弦相似度&lt;br&gt;Milvus" style="rounded=1;whiteSpace=wrap;html=1;flipV=0;flipH=1;labelBackgroundColor=none;" parent="1" vertex="1">
                     <mxGeometry x="226" y="146" width="120" height="60" as="geometry"/>
                 </mxCell>
-                <mxCell id="32" style="edgeStyle=none;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;labelBackgroundColor=none;" parent="1" source="4" target="22" edge="1">
+                <mxCell id="32" style="edgeStyle=none;html=1;labelBackgroundColor=none;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="4" target="6" edge="1">
                     <mxGeometry relative="1" as="geometry">
                         <Array as="points">
-                            <mxPoint x="546" y="450"/>
+                            <mxPoint x="546" y="370"/>
                         </Array>
+                        <mxPoint x="286" y="430" as="targetPoint"/>
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="4" value="模型生成SQL" style="rounded=1;whiteSpace=wrap;html=1;labelBackgroundColor=none;" parent="1" vertex="1">
