@@ -1,25 +1,25 @@
 services:
-  chat-bi:
+  chat-bi-api:
     image: chat-bi:v1.0.0
-    container_name: chat-bi
+    container_name: chat-bi-api
     depends_on:
-      - standalone
+      - milvus-standalone
     ports:
-      - "13000:13000"
+      - '13000:13000'
     environment:
-      - DB_HOST=172.22.220.64
+      - DB_HOST=127.0.0.1
       - DB_PORT=3306
       - DB_USER=root
       - DB_PASSWORD=admin123456
       - DB_NAME=chat_bi
-      - MILVUS_HOST=172.22.220.64
+      - MILVUS_HOST=127.0.0.1
       - MILVUS_PORT=19530
       - OPENAI_API_KEY=
-      - HTTP_PROXY=http://172.22.220.64:7890
-      - HTTPS_PROXY=http://172.22.220.64:7890
+      - HTTP_PROXY=http://127.0.0.1:7890
+      - HTTPS_PROXY=http://127.0.0.1:7890
     restart: unless-stopped
 
-  etcd:
+  milvus-etcd:
     container_name: milvus-etcd
     image: quay.io/coreos/etcd:v3.5.5
     environment:
@@ -31,33 +31,33 @@ services:
       - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/etcd:/etcd
     command: etcd -advertise-client-urls=http://127.0.0.1:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
     healthcheck:
-      test: [ "CMD", "etcdctl", "endpoint", "health" ]
+      test: ['CMD', 'etcdctl', 'endpoint', 'health']
       interval: 30s
       timeout: 20s
       retries: 3
 
-  minio:
+  milvus-minio:
     container_name: milvus-minio
     image: minio/minio:RELEASE.2023-03-20T20-16-18Z
     environment:
       MINIO_ACCESS_KEY: minioadmin
       MINIO_SECRET_KEY: minioadmin
     ports:
-      - "9001:9001"
-      - "9000:9000"
+      - '9001:9001'
+      - '9000:9000'
     volumes:
       - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/minio:/minio_data
     command: minio server /minio_data --console-address ":9001"
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      test: ['CMD', 'curl', '-f', 'http://localhost:9000/minio/health/live']
       interval: 30s
       timeout: 20s
       retries: 3
 
-  standalone:
+  milvus-standalone:
     container_name: milvus-standalone
     image: milvusdb/milvus:v2.4.12
-    command: [ "milvus", "run", "standalone" ]
+    command: ['milvus', 'run', 'standalone']
     security_opt:
       - seccomp:unconfined
     environment:
@@ -66,27 +66,28 @@ services:
     volumes:
       - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/milvus:/var/lib/milvus
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:9091/healthz" ]
+      test: ['CMD', 'curl', '-f', 'http://localhost:9091/healthz']
       interval: 30s
       start_period: 90s
       timeout: 20s
       retries: 3
     ports:
-      - "19530:19530"
-      - "9091:9091"
+      - '19530:19530'
+      - '9091:9091'
     depends_on:
-      - "etcd"
-      - "minio"
+      - 'milvus-etcd'
+      - 'milvus-minio'
 
-  attu:
+  milvus-attu:
     image: zilliz/attu:v2.4
+    container_name: milvus-attu
     ports:
-      - "19000:3000"
+      - '19000:3000'
     environment:
-      - MILVUS_URL=172.22.220.64:19530
+      - MILVUS_URL=127.0.0.1:19530
     restart: unless-stopped
     depends_on:
-      - "standalone"
+      - 'milvus-standalone'
 
 networks:
   default:
