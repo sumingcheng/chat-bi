@@ -14,7 +14,7 @@ set PYTHONPATH=%PYTHONPATH%;%SHELL_FOLDER%
 :: 设置数据库和 OpenAI API 的环境变量
 set OPENAI_API_KEY=sk-
 set DB_HOST=127.0.0.1
-set DB_PORT=3306
+set DB_PORT=13306
 set DB_USER=root
 set DB_PASSWORD=admin123456
 set DB_NAME=chat_bi
