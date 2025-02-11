@@ -76,6 +76,101 @@ create table sales
     foreign key (customer_id) references customer (customer_id)
 ) comment ='销售记录表';
 
+-- 1. 购物车表
+create table shopping_cart
+(
+    cart_id     int auto_increment primary key comment '购物车ID',
+    customer_id int comment '客户ID',
+    created_at  datetime default current_timestamp comment '创建时间',
+    updated_at  datetime default current_timestamp on update current_timestamp comment '更新时间',
+    foreign key (customer_id) references customer (customer_id)
+) comment ='购物车表';
+
+create table cart_item
+(
+    cart_item_id int auto_increment primary key comment '购物车项ID',
+    cart_id      int comment '购物车ID',
+    product_id   int comment '商品ID',
+    quantity     int not null comment '数量',
+    created_at   datetime default current_timestamp comment '创建时间',
+    updated_at   datetime default current_timestamp on update current_timestamp comment '更新时间',
+    foreign key (cart_id) references shopping_cart (cart_id),
+    foreign key (product_id) references product (product_id)
+) comment ='购物车项表';
+
+-- 2. 支付记录表
+create table payment
+(
+    payment_id     int auto_increment primary key comment '支付ID',
+    order_id       int comment '订单ID',
+    payment_amount decimal(10, 2) not null comment '支付金额',
+    payment_method enum ('alipay', 'wechat', 'credit_card', 'other') comment '支付方式',
+    payment_status enum ('pending', 'success', 'failed', 'refunded') comment '支付状态',
+    transaction_id varchar(100) comment '第三方支付交易号',
+    created_at     datetime default current_timestamp comment '创建时间',
+    updated_at     datetime default current_timestamp on update current_timestamp comment '更新时间',
+    foreign key (order_id) references sales_order (order_id)
+) comment ='支付记录表';
+
+-- 3. 商品评价表
+create table product_review
+(
+    review_id   int auto_increment primary key comment '评价ID',
+    product_id  int comment '商品ID',
+    customer_id int comment '客户ID',
+    order_id    int comment '订单ID',
+    rating      int check (rating between 1 and 5) comment '评分(1-5星)',
+    content     text comment '评价内容',
+    created_at  datetime default current_timestamp comment '创建时间',
+    updated_at  datetime default current_timestamp on update current_timestamp comment '更新时间',
+    foreign key (product_id) references product (product_id),
+    foreign key (customer_id) references customer (customer_id),
+    foreign key (order_id) references sales_order (order_id)
+) comment ='商品评价表';
+
+-- 4. 收货地址表
+create table shipping_address
+(
+    address_id   int auto_increment primary key comment '地址ID',
+    customer_id  int comment '客户ID',
+    receiver     varchar(50) not null comment '收货人',
+    phone        varchar(20) not null comment '联系电话',
+    province     varchar(50) not null comment '省份',
+    city         varchar(50) not null comment '城市',
+    district     varchar(50) not null comment '区县',
+    detail       varchar(255) not null comment '详细地址',
+    is_default   boolean default false comment '是否默认地址',
+    created_at   datetime default current_timestamp comment '创建时间',
+    updated_at   datetime default current_timestamp on update current_timestamp comment '更新时间',
+    foreign key (customer_id) references customer (customer_id)
+) comment ='收货地址表';
+
+-- 5. 优惠券表
+create table coupon
+(
+    coupon_id    int auto_increment primary key comment '优惠券ID',
+    code         varchar(50) unique comment '优惠券码',
+    type         enum ('percentage', 'fixed') comment '优惠类型：百分比/固定金额',
+    value        decimal(10, 2) comment '优惠值',
+    min_purchase decimal(10, 2) comment '最低消费金额',
+    start_date   datetime comment '生效时间',
+    end_date     datetime comment '过期时间',
+    created_at   datetime default current_timestamp comment '创建时间'
+) comment ='优惠券表';
+
+-- 6. 用户优惠券表
+create table customer_coupon
+(
+    customer_coupon_id int auto_increment primary key comment '用户优惠券ID',
+    customer_id        int comment '客户ID',
+    coupon_id         int comment '优惠券ID',
+    status            enum ('unused', 'used', 'expired') default 'unused' comment '使用状态',
+    used_time         datetime comment '使用时间',
+    created_at        datetime default current_timestamp comment '创建时间',
+    foreign key (customer_id) references customer (customer_id),
+    foreign key (coupon_id) references coupon (coupon_id)
+) comment ='用户优惠券表';
+
 insert into category (category_name, category_description)
 values ('电子产品', '电子设备和配件'),
        ('图书', '纸质和电子书籍'),
@@ -174,3 +269,78 @@ values (1, 1, 1, 699.99, '2024-10-01 10:15:00'),
        (19, 4, 1, 39.99, '2024-10-22 15:40:00'),
        (20, 3, 1, 199.99, '2024-10-18 14:10:00'),
        (8, 3, 1, 29.99, '2024-10-18 14:10:00');
+
+-- 插入收货地址数据
+insert into shipping_address (customer_id, receiver, phone, province, city, district, detail, is_default)
+values 
+(1, '约翰·多伊', '13800138001', '广东省', '深圳市', '南山区', '科技园南区8栋101室', true),
+(1, '约翰·多伊', '13800138001', '广东省', '深圳市', '福田区', '福田中心区花园大厦A座2204', false),
+(2, '简·史密斯', '13800138002', '北京市', '北京市', '朝阳区', '三里屯SOHO 2号楼606室', true),
+(3, '爱丽丝·王', '13800138003', '上海市', '上海市', '浦东新区', '陆家嘴环路1000号环球金融中心8楼', true),
+(4, '鲍勃·布朗', '13800138004', '浙江省', '杭州市', '西湖区', '文三路478号华星时代广场D座1801', true),
+(5, '查理·李', '13800138005', '四川省', '成都市', '武侯区', '天府大道北段1700号环球中心E2区2301', true);
+
+-- 插入优惠券数据
+insert into coupon (code, type, value, min_purchase, start_date, end_date)
+values 
+('WELCOME2024', 'fixed', 50.00, 200.00, '2024-01-01 00:00:00', '2024-12-31 23:59:59'),
+('SPRING20', 'percentage', 20.00, 100.00, '2024-03-01 00:00:00', '2024-05-31 23:59:59'),
+('SUMMER30', 'percentage', 30.00, 300.00, '2024-06-01 00:00:00', '2024-08-31 23:59:59'),
+('NEWYEAR100', 'fixed', 100.00, 500.00, '2024-01-01 00:00:00', '2024-01-31 23:59:59'),
+('VIP25OFF', 'percentage', 25.00, 200.00, '2024-01-01 00:00:00', '2024-12-31 23:59:59');
+
+-- 插入用户优惠券数据
+insert into customer_coupon (customer_id, coupon_id, status, used_time)
+values 
+(1, 1, 'unused', null),
+(1, 2, 'used', '2024-03-15 14:30:00'),
+(2, 1, 'unused', null),
+(2, 3, 'unused', null),
+(3, 4, 'used', '2024-01-05 18:20:00'),
+(3, 5, 'unused', null),
+(4, 2, 'expired', null),
+(5, 3, 'unused', null);
+
+-- 插入购物车数据
+insert into shopping_cart (customer_id)
+values (1), (2), (3), (4), (5);
+
+-- 插入购物车项数据
+insert into cart_item (cart_id, product_id, quantity)
+values 
+(1, 1, 1),  -- 用户1的购物车：智能手机
+(1, 6, 2),  -- 用户1的购物车：无线耳机2个
+(2, 3, 1),  -- 用户2的购物车：小说
+(2, 4, 3),  -- 用户2的购物车：T恤3件
+(3, 7, 1),  -- 用户3的购物车：电子书阅读器
+(3, 8, 2),  -- 用户3的购物车：食谱2本
+(4, 10, 1), -- 用户4的购物车：咖啡机
+(5, 15, 2); -- 用户5的购物车：搅拌杯2个
+
+-- 插入支付记录数据
+insert into payment (order_id, payment_amount, payment_method, payment_status, transaction_id)
+values 
+(1, 719.98, 'alipay', 'success', 'ALI202401011234567'),
+(2, 19.99, 'wechat', 'success', 'WX202401051234567'),
+(3, 104.98, 'credit_card', 'success', 'CC202401071234567'),
+(4, 549.97, 'alipay', 'failed', 'ALI202401091234567'),
+(5, 299.97, 'wechat', 'success', 'WX202401121234567'),
+(6, 99.98, 'alipay', 'success', 'ALI202401151234567'),
+(7, 159.97, 'wechat', 'success', 'WX202401171234567'),
+(8, 49.99, 'credit_card', 'refunded', 'CC202401181234567'),
+(9, 269.97, 'alipay', 'success', 'ALI202401201234567'),
+(10, 199.99, 'wechat', 'pending', 'WX202401221234567');
+
+-- 插入商品评价数据
+insert into product_review (product_id, customer_id, order_id, rating, content)
+values 
+(1, 1, 1, 5, '非常好用的智能手机，续航能力强，相机效果出色！'),
+(5, 1, 1, 4, '搅拌机功能齐全，就是有点吵。'),
+(3, 2, 2, 5, '很精彩的小说，一口气读完了！'),
+(4, 3, 3, 4, 'T恤质量不错，穿着舒服，就是尺码稍微偏大。'),
+(2, 4, 4, 5, '笔记本电脑性能强劲，玩游戏完全没问题。'),
+(6, 4, 4, 4, '降噪效果不错，就是戴久了会有点压耳朵。'),
+(9, 5, 5, 5, '牛仔裤很合身，做工精细。'),
+(8, 6, 6, 4, '食谱内容丰富，图片清晰，很实用。'),
+(14, 1, 7, 5, '健身追踪器功能齐全，防水效果好。'),
+(7, 4, 10, 4, '电子书阅读器屏幕清晰，护眼模式很赞。');
