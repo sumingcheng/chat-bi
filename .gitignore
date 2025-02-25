@@ -166,3 +166,6 @@ fastapi-demo/project-env/
 start-dev.sh
 docker-compose-dev.yaml
 /deploy/volumes/
+
+bin/ddl_generate.sh
+bin/ddl_generate.bat
