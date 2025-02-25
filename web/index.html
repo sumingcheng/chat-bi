@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat-BI - 数据分析聊天助手</title>
+    <link rel="stylesheet" href="index.css">
+    <!-- 引入 Chart.js 用于数据可视化 -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- 引入 Font Awesome 图标 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <h1>Chat-BI</h1>
+                <span class="subtitle">数据分析聊天助手</span>
+            </div>
+            <div class="admin-panel">
+                <button id="adminBtn" class="admin-btn">
+                    <i class="fas fa-cog"></i>
+                    <span>管理</span>
+                </button>
+            </div>
+        </header>
+        
+        <main>
+            <div class="chat-container">
+                <div class="messages" id="messageArea">
+                    <div class="message system">
+                        <div class="message-content">
+                            <p>欢迎使用 Chat-BI！请输入您的数据分析问题，例如"显示过去7天的销售趋势"。</p>
+                        </div>
+                    </div>
+                    <!-- 消息将在这里动态添加 -->
+                </div>
+                
+                <div class="input-area">
+                    <textarea id="userInput" placeholder="输入您的问题..."></textarea>
+                    <button id="sendBtn">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </main>
+        
+        <!-- SQL模板管理面板 (默认隐藏) -->
+        <div class="admin-panel-container" id="adminPanel">
+            <div class="admin-panel-header">
+                <h2>SQL 模板管理</h2>
+                <button id="closeAdminBtn"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="admin-panel-content">
+                <div class="template-list">
+                    <h3>现有模板</h3>
+                    <ul id="templateList">
+                        <!-- 模板列表将在这里动态添加 -->
+                    </ul>
+                </div>
+                <div class="template-form">
+                    <h3>添加/编辑模板</h3>
+                    <form id="templateForm">
+                        <div class="form-group">
+                            <label for="templateName">模板名称</label>
+                            <input type="text" id="templateName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="templateDescription">描述</label>
+                            <input type="text" id="templateDescription" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="templateSQL">SQL 查询</label>
+                            <textarea id="templateSQL" rows="5" required></textarea>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" id="saveTemplateBtn">保存</button>
+                            <button type="button" id="cancelTemplateBtn">取消</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="index.js"></script>
+</body>
+</html>
