@@ -13,3 +13,4 @@ def get_text_embedding(text):
     )
     embedding = response['data'][0]['embedding']
     return embedding
+    
