@@ -6,6 +6,6 @@ def mw_cors(app):
         CORSMiddleware,
         allow_origins=["*"],
         allow_credentials=True,
-        allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        allow_methods=["GET", "POST", "PUT","DELETE", "OPTIONS", "PATCH", "HEAD"],
         allow_headers=["*"],
     )

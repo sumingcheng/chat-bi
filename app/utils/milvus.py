@@ -1,5 +1,12 @@
 from app.journal.logging import logger
-from pymilvus import connections, FieldSchema, CollectionSchema, DataType, Collection, utility
+from pymilvus import (
+    connections,
+    FieldSchema,
+    CollectionSchema,
+    DataType,
+    Collection,
+    utility,
+)
 from app.utils.embedding_model import get_text_embedding
 from config.main import Config
 
@@ -8,7 +15,7 @@ from config.main import Config
 def connect_milvus():
     host = Config.MILVUS_HOST
     port = Config.MILVUS_PORT
-    connections.connect(alias='default', host=host, port=port)
+    connections.connect(alias="default", host=host, port=port)
 
 
 # 检查集合是否存在
@@ -20,13 +27,13 @@ def create_index(collection):
     index_params = {
         "metric_type": "COSINE",
         "index_type": "IVF_FLAT",
-        "params": {"nlist": 128}
+        "params": {"nlist": 128},
     }
     collection.create_index(field_name="embedding", index_params=index_params)
 
 
 def get_or_create_collection():
-    collection_name = 'question_embedding_collection'
+    collection_name = "question_embedding_collection"
 
     if not utility.has_collection(collection_name):
         # 定义字段
@@ -34,7 +41,7 @@ def get_or_create_collection():
             FieldSchema(name="id", dtype=DataType.INT64, is_primary=True, auto_id=True),
             FieldSchema(name="question", dtype=DataType.VARCHAR, max_length=512),
             FieldSchema(name="embedding", dtype=DataType.FLOAT_VECTOR, dim=1536),
-            FieldSchema(name="sql_query", dtype=DataType.VARCHAR, max_length=2048)
+            FieldSchema(name="sql_query", dtype=DataType.VARCHAR, max_length=2048),
         ]
         schema = CollectionSchema(fields, description="Question embeddings")
         collection = Collection(collection_name, schema=schema)
@@ -70,11 +77,7 @@ def insert_data(collection, questions, sql_queries):
             logger.error(f"获取文本嵌入时出错：{e}")
             continue
 
-    data = [
-        valid_questions,
-        embeddings,
-        valid_sql_queries
-    ]
+    data = [valid_questions, embeddings, valid_sql_queries]
 
     collection.insert(data)
     collection.load()
@@ -92,9 +95,7 @@ def search_similar_question(collection, user_question, top_k=1):
     # 执行向量搜索
     search_params = {
         "metric_type": "COSINE",
-        "params": {
-            "nprobe": 10  # 取 nlist 的 1% 到 10%。
-        }
+        "params": {"nprobe": 10},  # 取 nlist 的 1% 到 10%。
     }
 
     results = collection.search(
@@ -103,7 +104,7 @@ def search_similar_question(collection, user_question, top_k=1):
         param=search_params,
         limit=top_k,
         expr=None,
-        output_fields=["question", "sql_query"]
+        output_fields=["question", "sql_query"],
     )
 
     return results

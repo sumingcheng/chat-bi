@@ -10,15 +10,15 @@ logger.setLevel(logging.INFO)
 
 if not logger.handlers:
     # 确保日志目录存在
-    log_dir = 'logs'
+    log_dir = "logs"
     os.makedirs(log_dir, exist_ok=True)
 
     # 设置日志文件路径
-    log_file = os.path.join(log_dir, 'chat-bi.log')
+    log_file = os.path.join(log_dir, "chat-bi.log")
 
     # 创建文件处理器，设置日志滚动：日志文件最大 5MB，保留 5 个备份
     file_handler = RotatingFileHandler(
-        log_file, maxBytes=5 * 1024 * 1024, backupCount=5, encoding='utf-8'
+        log_file, maxBytes=5 * 1024 * 1024, backupCount=5, encoding="utf-8"
     )
     # 文件记录级别
     file_handler.setLevel(logging.INFO)
@@ -29,7 +29,7 @@ if not logger.handlers:
 
     # 设置日志格式
     formatter = logging.Formatter(
-        '%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s'
+        "%(asctime)s - %(levelname)s - %(filename)s:%(lineno)d - %(message)s"
     )
     file_handler.setFormatter(formatter)
     # 控制台日志级别

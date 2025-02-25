@@ -17,7 +17,7 @@ def handle_query(request: QueryRequest):
 
     except Exception as e:
         # 开发环境返回详细错误信息
-        if os.getenv('ENVIRONMENT') == 'development':
+        if os.getenv("ENVIRONMENT") == "development":
             raise HTTPException(status_code=500, detail=str(e))
         else:
             raise HTTPException(status_code=500, detail="服务器内部错误，请稍后重试。")

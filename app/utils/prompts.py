@@ -5,7 +5,7 @@ from typing import Optional, Dict, Any
 
 def database_schema(table_name: Optional[str] = None) -> str:
     """
-    根据表名返回对应的 DDL 信息
+    根据表名返回对应的 DDL 信息，优化多表的请况
 
     参数:
         table_name: 可选，表名。如果不提供，则返回所有表的 DDL 信息
@@ -14,13 +14,14 @@ def database_schema(table_name: Optional[str] = None) -> str:
         str: 表的 DDL 信息或所有表的 DDL 信息
     """
     # 获取 db_ddl.json 文件的路径
-    current_dir = os.path.dirname(os.path.dirname(
-        os.path.dirname(os.path.abspath(__file__))))
+    current_dir = os.path.dirname(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    )
     ddl_path = os.path.join(current_dir, "bin", "db_ddl.json")
 
     try:
         # 读取 JSON 文件
-        with open(ddl_path, 'r', encoding='utf-8') as f:
+        with open(ddl_path, "r", encoding="utf-8") as f:
             ddl_data = json.load(f)
 
         tables_info = ddl_data.get("tables", {})
@@ -49,12 +50,13 @@ def get_database_tables() -> Dict[str, Any]:
     返回:
         Dict: 包含所有表信息的字典
     """
-    current_dir = os.path.dirname(os.path.dirname(
-        os.path.dirname(os.path.abspath(__file__))))
+    current_dir = os.path.dirname(
+        os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    )
     ddl_path = os.path.join(current_dir, "bin", "db_ddl.json")
 
     try:
-        with open(ddl_path, 'r', encoding='utf-8') as f:
+        with open(ddl_path, "r", encoding="utf-8") as f:
             ddl_data = json.load(f)
         return ddl_data.get("tables", {})
     except Exception:

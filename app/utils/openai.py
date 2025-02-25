@@ -20,25 +20,26 @@ def parse_query_to_sql(user_query):
                 - 查询应包含必要的表关联（如需要产品名称，则关联 `product` 表）。
                 - SELECT 子句中应包括所有相关字段（如 `product_name`）。
                 - 确保语法正确，可在 MySQL 中执行。
-            """
+            """,
         },
         {
             "role": "user",
-            "content": f"请将以下问题直接转换为 SQL 查询\n\n\"{user_query}\""
-        }]
+            "content": f'请将以下问题直接转换为 SQL 查询\n\n"{user_query}"',
+        },
+    ]
 
     logger.info(f"用户问题：{user_query}")
 
     try:
         response = openai.ChatCompletion.create(
-            model='gpt-4o',
+            model="gpt-4o",
             messages=messages,
             temperature=0,
             max_tokens=150,
             n=1,
-            stop=None
+            stop=None,
         )
-        raw_response = response['choices'][0]['message']['content'].strip()
+        raw_response = response["choices"][0]["message"]["content"].strip()
         logger.info(f"原始 OpenAI 响应: {raw_response}")
 
         # 提取纯粹的 SQL 查询
@@ -46,8 +47,7 @@ def parse_query_to_sql(user_query):
 
         # 如果包含代码块，提取其中的内容
         if "```" in raw_response:
-            matches = re.findall(
-                r"```(?:sql)?\s*(.*?)\s*```", raw_response, re.DOTALL)
+            matches = re.findall(r"```(?:sql)?\s*(.*?)\s*```", raw_response, re.DOTALL)
             if matches:
                 sql_query = matches[0].strip()
         else:

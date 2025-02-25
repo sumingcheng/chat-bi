@@ -5,5 +5,5 @@ import sqlparse
 def validate_sql_query(sql_query):
     parsed = sqlparse.parse(sql_query)
     for statement in parsed:
-        if statement.get_type() != 'SELECT':
+        if statement.get_type() != "SELECT":
             raise ValueError("仅允许执行 SELECT 查询。")
