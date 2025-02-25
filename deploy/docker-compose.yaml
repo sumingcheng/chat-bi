@@ -19,6 +19,14 @@ services:
       - HTTPS_PROXY=http://127.0.0.1:7890
     restart: unless-stopped
 
+  chat-bi-frontend:
+    image: chat-bi-frontend:v1.0.0
+    container_name: chat-bi-frontend
+    ports:
+      - '12345:80'
+    restart: unless-stopped
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
   milvus-etcd:
     container_name: milvus-etcd
     image: quay.io/coreos/etcd:v3.5.5

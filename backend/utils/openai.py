@@ -1,9 +1,9 @@
 import re
 import openai
 from openai import OpenAIError
-from app.utils.prompts import database_schema
-from app.journal.logging import logger
-from config.main import Config
+from backend.utils.prompts import database_schema
+from backend.journal.logging import logger
+from backend.config.main import Config
 
 
 # 将用户查询解析为SQL查询

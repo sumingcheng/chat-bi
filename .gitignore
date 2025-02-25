@@ -167,6 +167,6 @@ start-dev.sh
 docker-compose-dev.yaml
 /deploy/volumes/
 
-bin/ddl_generate.sh
-bin/ddl_generate.bat
-bin/db_ddl.json
+backend/bin/ddl_generate.sh
+backend/bin/ddl_generate.bat
+backend/bin/db_ddl.json

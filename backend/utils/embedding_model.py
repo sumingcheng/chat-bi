@@ -1,6 +1,6 @@
 import openai
 
-from config.main import Config
+from backend.config.main import Config
 
 # 设置 OpenAI API 密钥
 openai.api_key = Config.OPENAI_API_KEY
