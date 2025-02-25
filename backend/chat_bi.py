@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-from app.middleware.cors import mw_cors
-from app.routers.api import router
+from backend.middleware.cors import mw_cors
+from backend.routers.api import router
 
 app = FastAPI()
 mw_cors(app)

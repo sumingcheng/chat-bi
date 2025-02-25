@@ -1,0 +1,50 @@
+# Node modules
+node_modules/
+
+# Log files
+*.log
+
+# Directory for npm cache
+.npm
+
+# Directory for the client-side npm package manager
+.bower
+
+# Ignore git history and configuration
+.git/
+.gitignore
+
+# Ignore Dockerfile and docker-compose files to avoid unnecessarily sending to the build context
+Dockerfile
+docker-compose*.yml
+
+# Ignore temporary files
+.tmp
+.temp
+
+# Ignore build outputs
+dist/
+build/
+out/
+
+# Ignore editor settings and backup files
+.vscode/
+*.swp
+*.swo
+*.bak
+*.sublime*
+
+# Ignore OS generated files
+.DS_Store
+Thumbs.db
+
+# Ignore other source control dirs
+.svn/
+.hg/
+
+# Additional files
+npm-debug.log
+yarn-debug.log
+yarn-error.log
+README.md
+.dockerignore

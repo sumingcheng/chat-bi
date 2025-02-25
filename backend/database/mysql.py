@@ -1,5 +1,5 @@
-from app.journal.logging import logger
-from config.main import Config
+from backend.journal.logging import logger
+from backend.config.main import Config
 import mysql.connector
 
 dbconfig = {

@@ -6,7 +6,7 @@
 
 ## 架构图
 
-![架构图](./images/chat-bi.svg)
+![架构图](images/chat-bi.svg)
 
 ## 本地开发
 
@@ -101,7 +101,7 @@ git push origin feature/your-feature-name
 
 ## 许可证
 
-本项目采用 **Apache License**。请参阅 [LICENSE](./LICENSE) 文件了解详情。
+本项目采用 **Apache License**。请参阅 [LICENSE](../LICENSE) 文件了解详情。
 
 ## 致谢
 

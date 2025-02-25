@@ -1,13 +1,13 @@
-from app.utils.openai import parse_query_to_sql
-from app.database.sql_validation import validate_sql_query
-from app.database.mysql import execute_sql_query
-from app.utils.milvus import (
+from backend.utils.openai import parse_query_to_sql
+from backend.database.sql_validation import validate_sql_query
+from backend.database.mysql import execute_sql_query
+from backend.utils.milvus import (
     connect_milvus,
     get_or_create_collection,
     insert_data,
     search_similar_question,
 )
-from app.journal.logging import logger
+from backend.journal.logging import logger
 
 
 def process_query(user_input):
