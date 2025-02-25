@@ -7,16 +7,14 @@ dbconfig = {
     "port": int(Config.DB_PORT),
     "user": Config.DB_USER,
     "password": Config.DB_PASSWORD,
-    "database": Config.DB_NAME
+    "database": Config.DB_NAME,
 }
 
 pool_name = "mysql_pool"
 pool_size = 5
 # 创建连接池
 pool = mysql.connector.pooling.MySQLConnectionPool(
-    pool_name=pool_name,
-    pool_size=pool_size,
-    **dbconfig
+    pool_name=pool_name, pool_size=pool_size, **dbconfig
 )
 
 

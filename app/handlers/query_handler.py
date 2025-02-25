@@ -1,7 +1,12 @@
 from app.utils.openai import parse_query_to_sql
 from app.database.sql_validation import validate_sql_query
 from app.database.mysql import execute_sql_query
-from app.utils.milvus import connect_milvus, get_or_create_collection, insert_data, search_similar_question
+from app.utils.milvus import (
+    connect_milvus,
+    get_or_create_collection,
+    insert_data,
+    search_similar_question,
+)
 from app.journal.logging import logger
 
 
@@ -49,7 +54,7 @@ def process_query(user_input):
 
 # 将结果格式化为 echarts 可用的数据格式
 def format_for_echarts(data):
-    columns = data['columns']
-    rows = data['data']
+    columns = data["columns"]
+    rows = data["data"]
     echarts_data = [dict(zip(columns, row)) for row in rows]
     return echarts_data
