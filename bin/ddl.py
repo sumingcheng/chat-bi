@@ -50,9 +50,8 @@ def get_table_ddl(connection, table_name):
 # 将DDL保存为JSON格式
 def save_ddl_to_json(tables_ddl, output_file=None):
     if output_file is None:
-        # 使用当前时间创建文件名
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        output_file = f"database_schema_{timestamp}.json"
+        # 使用固定文件名
+        output_file = "db_ddl.json"
 
     # 确保路径是相对于当前目录
     output_path = os.path.join(os.getcwd(), output_file)
@@ -69,7 +68,7 @@ def save_ddl_to_json(tables_ddl, output_file=None):
             "ddl": ddl
         }
 
-    # 写入JSON文件
+    # 写入JSON文件（如果文件存在则覆盖）
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(schema_data, f, indent=2, ensure_ascii=False)
 
