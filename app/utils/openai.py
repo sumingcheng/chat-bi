@@ -14,8 +14,8 @@ def parse_query_to_sql(user_query):
         {
             "role": "system",
             "content": f"""
-                你是一个将自然语言查询直接转换为针对 MySQL 数据库的 SQL 查询的大师。请只返回 SQL 查询，并保证 SQL 语句是正确的，数据库使用的是 only_full_group_by 模式，不要添加任何额外的说明、解释或文本。
-                \n\n数据库DDL如下：\n{database_schema}
+                你是一个将自然语言查询直接转换为针对 MySQL 数据库的 SQL 查询的专家。请只返回 SQL 查询，并保证 SQL 语句是正确的，数据库使用的是 only_full_group_by 模式，不要添加任何额外的说明、解释或文本，仅输出能执行的 SQL 语句。
+                \n\n数据库DDL如下：\n{database_schema()}
                 要求：
                 - 查询应包含必要的表关联（如需要产品名称，则关联 `product` 表）。
                 - SELECT 子句中应包括所有相关字段（如 `product_name`）。
@@ -46,7 +46,8 @@ def parse_query_to_sql(user_query):
 
         # 如果包含代码块，提取其中的内容
         if "```" in raw_response:
-            matches = re.findall(r"```(?:sql)?\s*(.*?)\s*```", raw_response, re.DOTALL)
+            matches = re.findall(
+                r"```(?:sql)?\s*(.*?)\s*```", raw_response, re.DOTALL)
             if matches:
                 sql_query = matches[0].strip()
         else:
