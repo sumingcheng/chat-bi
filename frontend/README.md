@@ -1,5 +1,7 @@
 # Chat-BI
 
+目前正在调整结构和编写前端界面，很快会可以直接支持 docker 部署，大家稍等
+
 ## 概述
 
 用户使用自然语言查询数据。基于 **Python**、**MySQL** 和 **Milvus** 构建，将用户的问题转换为 SQL 查询，安全地执行，并产生符合`echarts`的数据可视化呈现结果。
@@ -39,20 +41,21 @@ pip install torch==1.11.0+cpu -f https://download.pytorch.org/whl/torch_stable.h
 pip install -r requirements.txt
 ```
 
-#### 配置MySQL和Milvus
+#### 配置 MySQL 和 Milvus
 
 参考`deploy/docker-compose.yaml`的内容一键启动，注意提前修改环境变量
+
 ```yaml
-      DB_HOST=mysql
-      DB_PORT=3306
-      DB_USER=root
-      DB_PASSWORD=admin123456
-      DB_NAME=chat_bi
-      MILVUS_HOST=
-      MILVUS_PORT=19530
-      OPENAI_API_KEY=
-      HTTP_PROXY=最好配置一下，要不然请求不到 openai
-      HTTPS_PROXY=最好配置一下，要不然请求不到 openai
+DB_HOST=mysql
+DB_PORT=3306
+DB_USER=root
+DB_PASSWORD=admin123456
+DB_NAME=chat_bi
+MILVUS_HOST=
+MILVUS_PORT=19530
+OPENAI_API_KEY=
+HTTP_PROXY=最好配置一下，要不然请求不到 openai
+HTTPS_PROXY=最好配置一下，要不然请求不到 openai
 ```
 
 #### 运行应用程序
