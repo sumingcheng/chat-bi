@@ -1,5 +1,3 @@
-import os
-import uuid
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from backend.models.schemas import QueryRequest, QueryResponse, SatisfactionRequest
@@ -9,14 +7,14 @@ from backend.database.connection import get_system_db
 from backend.handlers.template_matcher import match_sql_template
 from backend.utils.openai import parse_query_to_sql
 from backend.database.sql_validation import validate_sql_query
+from backend.database.mysql import get_system_db_connection
 
 router = APIRouter(prefix="/api")
 
 
 @router.post("/query", response_model=QueryResponse)
 async def handle_query(
-    request: QueryRequest,
-    db: AsyncSession = Depends(get_system_db)
+    request: QueryRequest, db: AsyncSession = Depends(get_system_db)
 ):
     try:
         result = await process_query(request.user_input, db)
@@ -25,7 +23,7 @@ async def handle_query(
             data=result["data"],
             suggested_visualization=result["visualization_type"],
             sql_query=result["sql_query"],
-            status="success"
+            status="success",
         )
     except Exception as e:
         logger.error(f"处理查询失败: {e}")
