@@ -170,3 +170,6 @@ docker-compose-dev.yaml
 backend/bin/ddl_generate.sh
 backend/bin/ddl_generate.bat
 backend/bin/db_ddl.json
+
+backend/run.sh
+backend/run.bat

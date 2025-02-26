@@ -1,0 +1,29 @@
+@echo off
+setlocal
+
+rem 获取脚本所在目录
+set SCRIPT_DIR=%~dp0
+echo Script directory: %SCRIPT_DIR%
+
+rem 设置 Python 日志不缓冲
+set PYTHONUNBUFFERED=1
+
+rem 设置 Python 路径
+set PYTHONPATH=%PYTHONPATH%;%SCRIPT_DIR%
+
+rem 设置代理
+set HTTP_PROXY=http://127.0.0.1:7890
+set HTTPS_PROXY=http://127.0.0.1:7890
+
+rem 设置数据库和OpenAI API的环境变量
+set OPENAI_API_KEY=sk-
+set DB_HOST=127.0.0.1
+set DB_PORT=13306
+set DB_USER=root
+set DB_PASSWORD=admin123456
+set DB_NAME=chat_bi
+
+rem 启动 Python 应用
+python main.py
+
+pause 
