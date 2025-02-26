@@ -1,10 +1,10 @@
-docker_image_name ?= chat-bi-api
-docker_image_tag ?= v1.0.1
+BACKEND_IMAGE_NAME ?= chat-bi-api
+BACKEND_IMAGE_TAG ?= v1.0.1
 
-dockerfile_path = ./Dockerfile
+DOCKERFILE_PATH = ./Dockerfile
 
 build:
-	docker build --build-arg USE_CHINA_MIRROR=true -f $(dockerfile_path) -t $(docker_image_name):$(docker_image_tag) .
+	docker build --build-arg USE_CHINA_MIRROR=true -f $(DOCKERFILE_PATH) -t $(BACKEND_IMAGE_NAME):$(BACKEND_IMAGE_TAG) .
 
 run:
 	cd deploy && docker-compose -f docker-compose.yaml up -d

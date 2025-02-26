@@ -1,13 +1,13 @@
-docker_image_name ?= chat-bi-frontend
-docker_image_tag ?= v1.0.0
+FRONTEND_IMAGE_NAME ?= chat-bi-frontend
+FRONTEND_IMAGE_TAG ?= v1.0.0
 
-dockerfile_path = ./Dockerfile
+DOCKERFILE_PATH = ./Dockerfile
 
 build:
-	docker build --build-arg USE_CHINA_MIRROR=true -f $(dockerfile_path) -t $(docker_image_name):$(docker_image_tag) .
+	docker build -f $(DOCKERFILE_PATH) -t $(FRONTEND_IMAGE_NAME):$(FRONTEND_IMAGE_TAG) .
 
 run:
-	cd deploy && docker-compose -f docker-compose-dev.yaml up -d
+	cd ../deploy && docker-compose -f docker-compose.yaml up -d
 
 down:
-	cd deploy && docker-compose -f docker-compose-dev.yaml down
+	cd ../deploy && docker-compose -f docker-compose.yaml down
