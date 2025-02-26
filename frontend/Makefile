@@ -10,4 +10,4 @@ run:
 	cd ../deploy && docker-compose -f docker-compose.yaml up -d chat-bi-frontend
 
 down:
-	cd ../deploy && docker-compose -f docker-compose.yaml down chat-bi-frontend·
+	cd ../deploy && docker-compose -f docker-compose.yaml down chat-bi-frontend
