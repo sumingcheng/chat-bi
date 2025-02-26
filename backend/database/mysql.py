@@ -1,45 +1,65 @@
-from backend.journal.logging import logger
-from backend.config.main import Config
 import mysql.connector
+from mysql.connector import pooling
+from backend.config.main import Config
+from backend.journal.logging import logger
 
-dbconfig = {
-    "host": Config.DB_HOST,
-    "port": int(Config.DB_PORT),
-    "user": Config.DB_USER,
-    "password": Config.DB_PASSWORD,
-    "database": Config.DB_NAME,
+# 业务数据库连接池配置
+BUSINESS_DB_CONFIG = {
+    "pool_name": "business_pool",
+    "pool_size": 5,
+    "host": Config.MYSQL_HOST,
+    "user": Config.MYSQL_USER,
+    "password": Config.MYSQL_PASSWORD,
+    "database": "chat_bi"
 }
 
-pool_name = "mysql_pool"
-pool_size = 5
+# 系统数据库连接池配置
+SYSTEM_DB_CONFIG = {
+    "pool_name": "system_pool",
+    "pool_size": 5,
+    "host": Config.MYSQL_HOST,
+    "user": Config.MYSQL_USER,
+    "password": Config.MYSQL_PASSWORD,
+    "database": "chat_bi_sys"
+}
+
 # 创建连接池
-pool = mysql.connector.pooling.MySQLConnectionPool(
-    pool_name=pool_name, pool_size=pool_size, **dbconfig
-)
+business_pool = mysql.connector.pooling.MySQLConnectionPool(**BUSINESS_DB_CONFIG)
+system_pool = mysql.connector.pooling.MySQLConnectionPool(**SYSTEM_DB_CONFIG)
 
-
-# 从连接池获取连接
-def get_db_connection():
+def get_business_db_connection():
+    """
+    获取业务数据库连接
+    """
     try:
-        connection = pool.get_connection()
-        return connection
+        return business_pool.get_connection()
     except Exception as e:
-        logger.error(f"获取数据库连接失败: {e}")
+        logger.error(f"获取业务数据库连接失败: {e}")
         raise
 
-
-# 执行 SQL 查询并返回结果
-def execute_sql_query(sql_query):
+def get_system_db_connection():
+    """
+    获取系统数据库连接
+    """
     try:
-        connection = get_db_connection()
-        cursor = connection.cursor()
-        logger.info(f"执行 SQL 查询✔: {sql_query}")
-        cursor.execute(sql_query)
-        columns = cursor.column_names
-        results = cursor.fetchall()
+        return system_pool.get_connection()
+    except Exception as e:
+        logger.error(f"获取系统数据库连接失败: {e}")
+        raise
+
+def execute_query(sql: str, params: tuple = None, is_system_db: bool = False):
+    """
+    执行查询
+    """
+    conn = get_system_db_connection() if is_system_db else get_business_db_connection()
+    try:
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute(sql, params)
+        result = cursor.fetchall()
         cursor.close()
-        connection.close()
-        return {"columns": columns, "data": results}
-    except mysql.connector.Error as err:
-        logger.error(f"数据库错误: {err}")
-        raise ValueError("数据库查询失败。")
+        return result
+    except Exception as e:
+        logger.error(f"执行查询失败: {e}")
+        raise
+    finally:
+        conn.close()
