@@ -1,7 +1,7 @@
 from loguru import logger
 import sys
 from pathlib import Path
-from backend.config.main import Config
+from config.main import Config
 
 # 创建日志目录
 log_path = Path("logs")

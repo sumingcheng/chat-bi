@@ -2,6 +2,8 @@ import os
 
 
 class Config:
+    DEBUG = os.getenv("DEBUG", "False").lower() in ("true", "1", "yes")
+    
     DB_HOST = os.getenv("DB_HOST", "localhost")
     DB_PORT = int(os.getenv("DB_PORT", 13306))
     DB_USER = os.getenv("DB_USER", "root")

@@ -1,6 +1,6 @@
 from fastapi import FastAPI
-from backend.middleware.cors import mw_cors
-from backend.routers import api, templates
+from middleware.cors import mw_cors
+from routers import api, templates
 import uvicorn
 
 # 创建FastAPI应用

@@ -1,5 +1,5 @@
 from typing import Dict, Any, List, Tuple
-from backend.utils.openai import call_openai_api
+from utils.openai import call_openai_api
 import json
 
 class ParameterResolver:

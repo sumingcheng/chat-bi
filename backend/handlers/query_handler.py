@@ -1,20 +1,20 @@
-from backend.utils.openai import parse_query_to_sql
-from backend.database.sql_validation import validate_sql_query
-from backend.database.mysql import execute_sql_query
-from backend.utils.milvus import (
+from utils.openai import parse_query_to_sql
+from database.sql_validation import validate_sql_query
+from database.mysql import execute_query
+from utils.milvus import (
     connect_milvus,
     get_or_create_collection,
     insert_data,
     search_similar_question,
 )
-from backend.handlers.template_matcher import match_sql_template
-from backend.utils.visualization import suggest_visualization_type
-from backend.journal.logging import logger
-from backend.utils.cache import QueryCache
-from backend.utils.parameter_resolver import ParameterResolver
+from handlers.template_matcher import match_sql_template
+from utils.visualization import suggest_visualization_type
+from journal.logging import logger
+from utils.cache import QueryCache
+from utils.parameter_resolver import ParameterResolver
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from backend.database.models import QueryHistory
+from database.models import QueryHistory
 import json
 import uuid
 
@@ -73,7 +73,7 @@ async def process_query(user_input: str, db: AsyncSession) -> dict:
         validate_sql_query(sql_query)
 
         # 执行查询
-        result = execute_sql_query(sql_query)
+        result = execute_query(sql_query)
 
         # 格式化数据并推荐可视化类型
         formatted_data = format_for_echarts(result)
@@ -84,7 +84,7 @@ async def process_query(user_input: str, db: AsyncSession) -> dict:
             query_id=str(uuid.uuid4()),
             user_input=user_input,
             sql_query=sql_query,
-            result=json.dumps(formatted_data)
+            result=json.dumps(formatted_data),
         )
         db.add(query_history)
         await db.commit()

@@ -1,13 +1,13 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from backend.models.schemas import QueryRequest, QueryResponse, SatisfactionRequest
-from backend.handlers.query_handler import process_query
-from backend.journal.logging import logger
-from backend.database.connection import get_system_db
-from backend.handlers.template_matcher import match_sql_template
-from backend.utils.openai import parse_query_to_sql
-from backend.database.sql_validation import validate_sql_query
-from backend.database.mysql import get_system_db_connection
+from models.schemas import QueryRequest, QueryResponse, SatisfactionRequest
+from handlers.query_handler import process_query
+from journal.logging import logger
+from database.connection import get_system_db
+from handlers.template_matcher import match_sql_template
+from utils.openai import parse_query_to_sql
+from database.sql_validation import validate_sql_query
+from database.mysql import get_system_db_connection
 
 router = APIRouter(prefix="/api")
 
@@ -57,7 +57,7 @@ async def record_satisfaction(request: SatisfactionRequest):
             conn.close()
 
             if record:
-                from backend.utils.milvus import (
+                from utils.milvus import (
                     connect_milvus,
                     get_or_create_collection,
                     insert_data,

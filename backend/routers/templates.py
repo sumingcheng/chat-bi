@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException
 from typing import List
-from backend.models.schemas import SQLTemplate, SQLTemplateCreate, SQLTemplateUpdate
-from backend.database.mysql import get_system_db_connection
-from backend.journal.logging import logger
+from models.schemas import SQLTemplate, SQLTemplateCreate, SQLTemplateUpdate
+from database.mysql import get_system_db_connection
+from journal.logging import logger
 
 router = APIRouter(prefix="/api/templates")
 
