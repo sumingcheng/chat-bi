@@ -7,7 +7,7 @@ build:
 	docker build -f $(DOCKERFILE_PATH) -t $(FRONTEND_IMAGE_NAME):$(FRONTEND_IMAGE_TAG) .
 
 run:
-	cd ../deploy && docker-compose -f docker-compose.yaml up -d
+	cd ../deploy && docker-compose -f docker-compose.yaml up -d chat-bi-frontend
 
 down:
-	cd ../deploy && docker-compose -f docker-compose.yaml down
+	cd ../deploy && docker-compose -f docker-compose.yaml down chat-bi-frontend·
