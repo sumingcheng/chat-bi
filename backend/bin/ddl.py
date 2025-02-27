@@ -3,7 +3,6 @@ import mysql.connector
 import mysql
 import json
 import os
-import sys
 from datetime import datetime
 
 
