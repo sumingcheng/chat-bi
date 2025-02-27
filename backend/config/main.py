@@ -5,10 +5,11 @@ class Config:
     DEBUG = os.getenv("DEBUG", "False").lower() in ("true", "1", "yes")
 
     DB_HOST = os.getenv("DB_HOST", "localhost")
-    DB_PORT = int(os.getenv("DB_PORT", 13306))
+    DB_PORT = int(os.getenv("DB_PORT", 33306))
     DB_USER = os.getenv("DB_USER", "root")
     DB_PASSWORD = os.getenv("DB_PASSWORD", "")
-    DB_NAME = os.getenv("DB_NAME", "chat-bi")
+    DB_NAME = os.getenv("DB_NAME", "chat_bi")
+    DB_SYS_NAME = os.getenv("DB_SYS_NAME", "chat_bi_sys")
 
     MILVUS_HOST = os.getenv("MILVUS_HOST", "localhost")
     MILVUS_PORT = os.getenv("MILVUS_PORT", "19530")
