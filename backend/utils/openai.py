@@ -24,7 +24,7 @@ async def parse_query_to_sql(query: str) -> str:
             messages=[
                 {
                     "role": "system",
-                    "content": "你是一个SQL专家，请将用户的自然语言问题转换为SQL查询语句。",
+                    "content": "你是一个SQL查询专家，请将用户的自然语言问题转换为SQL查询语句。仅返回SQL查询语句，不要返回任何解释或说明。",
                 },
                 {"role": "user", "content": query},
             ],
