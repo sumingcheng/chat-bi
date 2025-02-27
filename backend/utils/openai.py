@@ -1,22 +1,15 @@
 from openai import OpenAI
-import openai
 from openai import OpenAIError
-from utils.prompts import database_schema
 from journal.logging import logger
 from config.main import Config
-from utils.retry import with_retry
 
-client = OpenAI(api_key=Config.OPENAI_API_KEY)
+client = OpenAI(api_key=Config.OPENAI_API_KEY, base_url="https://api.deepseek.com")
 
 
-@with_retry(max_retries=3, delay=1.0, exceptions=(OpenAIError,))
 async def call_openai_api(messages: list, **kwargs) -> str:
-    """
-    带重试机制的OpenAI API调用
-    """
     try:
-        response = await openai.ChatCompletion.acreate(
-            model="gpt-4", messages=messages, temperature=0, **kwargs
+        response = client.chat.completions.create(
+            model="deepseek-chat", messages=messages, temperature=0, **kwargs
         )
         return response.choices[0].message.content.strip()
     except OpenAIError as e:
@@ -25,12 +18,9 @@ async def call_openai_api(messages: list, **kwargs) -> str:
 
 
 async def parse_query_to_sql(query: str) -> str:
-    """
-    使用OpenAI将自然语言查询转换为SQL
-    """
     try:
         response = client.chat.completions.create(
-            model="gpt-4",
+            model="deepseek-chat",
             messages=[
                 {
                     "role": "system",
@@ -47,7 +37,4 @@ async def parse_query_to_sql(query: str) -> str:
 
 
 def get_openai_client():
-    """
-    获取OpenAI客户端实例
-    """
     return client
