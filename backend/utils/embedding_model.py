@@ -1,18 +1,16 @@
 import requests
 from config.main import Config
 
-EMBEDDING_API_URL = "http://172.22.220.64:11434/api/embeddings"
-
 
 def get_text_embedding(text):
     """
-    使用 Ollama 部署的 bge-m3 模型获取文本嵌入向量
+    使用 Ollama 部署的模型获取文本嵌入向量
     """
     try:
         response = requests.post(
-            EMBEDDING_API_URL,
+            Config.EMBEDDING_API_URL,
             json={
-                "model": "bge-m3",
+                "model": Config.EMBEDDING_MODEL,
                 "prompt": text,
             },
         )

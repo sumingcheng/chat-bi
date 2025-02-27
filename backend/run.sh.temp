@@ -28,5 +28,8 @@ export DB_USER="root"
 export DB_PASSWORD="admin123456"
 export DB_NAME="chat_bi"
 
+export EMBEDDING_API_URL="http://172.22.220.64:11434/api/embeddings"
+export EMBEDDING_MODEL="bge-m3"
+
 # 启动 Python 应用
 python main.py
