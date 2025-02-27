@@ -23,6 +23,9 @@ set DB_USER=root
 set DB_PASSWORD=admin123456
 set DB_NAME=chat_bi
 
+set "MILVUS_HOST=172.22.220.64"
+set "MILVUS_PORT=19530"
+
 set EMBEDDING_API_URL=http://172.22.220.64:11434/api/embeddings
 set EMBEDDING_MODEL=bge-m3
 
