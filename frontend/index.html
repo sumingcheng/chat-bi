@@ -1,88 +1,89 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat-BI - 数据分析助手</title>
-    <link rel="stylesheet" href="index.css">
-    <!-- 引入 Chart.js 用于数据可视化 -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- 引入 Font Awesome 图标 -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat-BI - 数据分析助手</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="index.css">
 </head>
+
 <body>
-    <div class="container">
-        <header>
-            <div class="logo">
-                <h1>Chat-BI</h1>
-                <span class="subtitle">数据分析助手</span>
+  <div class="container py-4">
+    <header class="d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
+      <div class="d-flex align-items-baseline">
+        <h1 class="h3 me-2 text-primary">Chat-BI</h1>
+        <span class="text-muted">数据分析助手</span>
+      </div>
+      <button id="adminBtn" class="btn btn-outline-secondary" data-bs-toggle="offcanvas" data-bs-target="#adminPanel">
+        <i class="fas fa-cog me-1"></i>管理
+      </button>
+    </header>
+
+    <main class="flex-grow-1 d-flex flex-column">
+      <div class="card flex-grow-1">
+        <div class="card-body d-flex flex-column">
+          <div id="messageArea" class="flex-grow-1 overflow-auto mb-3">
+            <div class="message system">
+              <div class="alert alert-info">
+                欢迎使用 Chat-BI！请输入您的数据分析问题，例如"显示过去7天的销售趋势"。
+              </div>
             </div>
-            <div class="admin-panel">
-                <button id="adminBtn" class="admin-btn">
-                    <i class="fas fa-cog"></i>
-                    <span>管理</span>
-                </button>
-            </div>
-        </header>
-        
-        <main>
-            <div class="chat-container">
-                <div class="messages" id="messageArea">
-                    <div class="message system">
-                        <div class="message-content">
-                            <p>欢迎使用 Chat-BI！请输入您的数据分析问题，例如"显示过去7天的销售趋势"。</p>
-                        </div>
-                    </div>
-                    <!-- 消息将在这里动态添加 -->
-                </div>
-                
-                <div class="input-area">
-                    <textarea id="userInput" placeholder="输入您的问题..."></textarea>
-                    <button id="sendBtn">
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
-                </div>
-            </div>
-        </main>
-        
-        <!-- SQL模板管理面板 (默认隐藏) -->
-        <div class="admin-panel-container" id="adminPanel">
-            <div class="admin-panel-header">
-                <h2>SQL 模板管理</h2>
-                <button id="closeAdminBtn"><i class="fas fa-times"></i></button>
-            </div>
-            <div class="admin-panel-content">
-                <div class="template-list">
-                    <h3>现有模板</h3>
-                    <ul id="templateList">
-                        <!-- 模板列表将在这里动态添加 -->
-                    </ul>
-                </div>
-                <div class="template-form">
-                    <h3>添加/编辑模板</h3>
-                    <form id="templateForm">
-                        <div class="form-group">
-                            <label for="templateName">模板名称</label>
-                            <input type="text" id="templateName" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="templateDescription">描述</label>
-                            <input type="text" id="templateDescription" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="templateSQL">SQL 查询</label>
-                            <textarea id="templateSQL" rows="5" required></textarea>
-                        </div>
-                        <div class="form-actions">
-                            <button type="submit" id="saveTemplateBtn">保存</button>
-                            <button type="button" id="cancelTemplateBtn">取消</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+          </div>
+
+          <div class="input-group">
+            <textarea id="userInput" class="form-control" rows="2" placeholder="输入您的问题..."></textarea>
+            <button id="sendBtn" class="btn btn-primary">
+              <i class="fas fa-paper-plane"></i>
+            </button>
+          </div>
         </div>
+      </div>
+    </main>
+
+    <!-- SQL模板管理面板 -->
+    <div class="offcanvas offcanvas-end" id="adminPanel" tabindex="-1">
+      <div class="offcanvas-header">
+        <h5 class="offcanvas-title">SQL 模板管理</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+      </div>
+      <div class="offcanvas-body">
+        <div class="mb-4">
+          <h6>现有模板</h6>
+          <ul id="templateList" class="list-group list-group-flush"></ul>
+        </div>
+        <form id="templateForm">
+          <h6>添加/编辑模板</h6>
+          <div class="mb-3">
+            <label class="form-label">模板名称</label>
+            <input type="text" id="templateName" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">描述</label>
+            <input type="text" id="templateDescription" class="form-control" required>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">SQL 查询</label>
+            <textarea id="templateSQL" class="form-control" rows="5" required></textarea>
+          </div>
+          <div class="text-end">
+            <button type="button" id="cancelTemplateBtn" class="btn btn-light me-2">取消</button>
+            <button type="submit" class="btn btn-primary">保存</button>
+          </div>
+        </form>
+      </div>
     </div>
-    
-    <script src="index.js"></script>
+  </div>
+
+  <!-- 必要的JS文件 -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="index.js"></script>
 </body>
+
 </html>

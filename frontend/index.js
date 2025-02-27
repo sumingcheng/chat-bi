@@ -1,368 +1,314 @@
-// 全局变量
-let templates = []
-let currentTemplateId = null
+$(document).ready(() => {
+  // 初始化Bootstrap的工具提示
+  $('[data-bs-toggle="tooltip"]').tooltip()
 
-// DOM 元素
-const messageArea = document.getElementById('messageArea')
-const userInput = document.getElementById('userInput')
-const sendBtn = document.getElementById('sendBtn')
-const adminBtn = document.getElementById('adminBtn')
-const adminPanel = document.getElementById('adminPanel')
-const closeAdminBtn = document.getElementById('closeAdminBtn')
-const templateList = document.getElementById('templateList')
-const templateForm = document.getElementById('templateForm')
-const templateName = document.getElementById('templateName')
-const templateDescription = document.getElementById('templateDescription')
-const templateSQL = document.getElementById('templateSQL')
-const saveTemplateBtn = document.getElementById('saveTemplateBtn')
-const cancelTemplateBtn = document.getElementById('cancelTemplateBtn')
-
-// 初始化
-document.addEventListener('DOMContentLoaded', () => {
-  // 监听发送按钮点击
-  sendBtn.addEventListener('click', sendMessage)
-
-  // 监听输入框回车键
-  userInput.addEventListener('keypress', (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault()
-      sendMessage()
-    }
-  })
-
-  // 监听管理员面板按钮
-  adminBtn.addEventListener('click', toggleAdminPanel)
-  closeAdminBtn.addEventListener('click', toggleAdminPanel)
-
-  // 监听模板表单提交
-  templateForm.addEventListener('submit', (e) => {
-    e.preventDefault()
-    saveTemplate()
-  })
-
-  // 监听取消按钮
-  cancelTemplateBtn.addEventListener('click', resetTemplateForm)
-
-  // 加载模板数据
-  loadTemplates()
-})
-
-// 发送消息
-function sendMessage() {
-  const message = userInput.value.trim()
-  if (!message) return
-
-  // 添加用户消息到聊天区域
-  addMessage(message, 'user')
-
-  // 清空输入框
-  userInput.value = ''
-
-  // 模拟处理中状态
-  const loadingMessage = addMessage('正在分析您的问题...', 'assistant')
-
-  // 模拟API调用延迟
-  setTimeout(() => {
-    // 移除加载消息
-    messageArea.removeChild(loadingMessage)
-
-    // 处理响应
-    processResponse(message)
-  }, 1500)
-}
-
-// 添加消息到聊天区域
-function addMessage(content, type) {
-  const messageDiv = document.createElement('div')
-  messageDiv.className = `message ${type}`
-
-  const messageContent = document.createElement('div')
-  messageContent.className = 'message-content'
-
-  const paragraph = document.createElement('p')
-  paragraph.textContent = content
-  messageContent.appendChild(paragraph)
-
-  messageDiv.appendChild(messageContent)
-
-  // 如果是助手消息，添加满意度评价
-  if (type === 'assistant') {
-    const feedback = document.createElement('div')
-    feedback.className = 'feedback'
-
-    const likeBtn = document.createElement('button')
-    likeBtn.innerHTML = '<i class="fas fa-thumbs-up"></i>'
-    likeBtn.addEventListener('click', () => handleFeedback(messageDiv, true))
-
-    const dislikeBtn = document.createElement('button')
-    dislikeBtn.innerHTML = '<i class="fas fa-thumbs-down"></i>'
-    dislikeBtn.addEventListener('click', () => handleFeedback(messageDiv, false))
-
-    feedback.appendChild(likeBtn)
-    feedback.appendChild(dislikeBtn)
-
-    messageDiv.appendChild(feedback)
+  // 状态管理
+  const state = {
+    templates: [],
+    currentTemplateId: null,
+    currentQueryId: null
   }
 
-  messageArea.appendChild(messageDiv)
+  // 添加基础URL配置
+  const API_BASE_URL = 'http://127.0.0.1:13000'
 
-  // 滚动到底部
-  messageArea.scrollTop = messageArea.scrollHeight
-
-  return messageDiv
-}
-
-// 处理满意度评价
-function handleFeedback(messageDiv, isPositive) {
-  const feedbackDiv = messageDiv.querySelector('.feedback')
-  const buttons = feedbackDiv.querySelectorAll('button')
-
-  // 重置所有按钮
-  buttons.forEach(btn => btn.classList.remove('active'))
-
-  // 激活选中的按钮
-  if (isPositive) {
-    buttons[0].classList.add('active')
-  } else {
-    buttons[1].classList.add('active')
-  }
-
-  // 这里可以发送反馈到服务器
-  console.log(`用户提供了${isPositive ? '正面' : '负面'}反馈`)
-}
-
-// 处理响应
-function processResponse(query) {
-  // 模拟不同类型的响应
-  const responseTypes = ['text', 'chart', 'noData']
-  const randomType = responseTypes[Math.floor(Math.random() * responseTypes.length)]
-
-  switch (randomType) {
-    case 'text':
-      addMessage(`根据您的问题"${query}"，我找到了以下信息：这是一个文本回答示例。`, 'assistant')
-      break
-
-    case 'chart':
-      const chartResponse = addMessage(`根据您的问题"${query}"，以下是相关的数据图表：`, 'assistant')
-      addChart(chartResponse, getRandomChartType())
-      break
-
-    case 'noData':
-      addMessage(`抱歉，我无法找到与"${query}"相关的数据。请尝试其他问题或修改您的查询。`, 'assistant')
-      break
-  }
-}
-
-// 添加图表到消息
-function addChart(messageDiv, chartType) {
-  const messageContent = messageDiv.querySelector('.message-content')
-
-  const chartContainer = document.createElement('div')
-  chartContainer.className = 'chart-container'
-
-  const canvas = document.createElement('canvas')
-  chartContainer.appendChild(canvas)
-  messageContent.appendChild(chartContainer)
-
-  // 创建随机数据
-  const labels = ['一月', '二月', '三月', '四月', '五月', '六月', '七月']
-  const data = Array.from({ length: 7 }, () => Math.floor(Math.random() * 100))
-
-  // 创建图表
-  const ctx = canvas.getContext('2d')
-  let chart
-
-  switch (chartType) {
-    case 'line':
-      chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-          labels: labels,
-          datasets: [{
-            label: '数据趋势',
-            data: data,
-            borderColor: '#3182ce',
-            backgroundColor: 'rgba(49, 130, 206, 0.1)',
-            tension: 0.3,
-            fill: true
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false
-        }
-      })
-      break
-
-    case 'bar':
-      chart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-          labels: labels,
-          datasets: [{
-            label: '数据统计',
-            data: data,
-            backgroundColor: 'rgba(49, 130, 206, 0.7)'
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false
-        }
-      })
-      break
-
-    case 'pie':
-      chart = new Chart(ctx, {
-        type: 'pie',
-        data: {
-          labels: labels,
-          datasets: [{
-            data: data,
-            backgroundColor: [
-              '#3182ce', '#38b2ac', '#4299e1', '#9f7aea',
-              '#ed8936', '#ecc94b', '#48bb78'
-            ]
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false
-        }
-      })
-      break
-  }
-
-  // 滚动到底部
-  messageArea.scrollTop = messageArea.scrollHeight
-}
-
-// 获取随机图表类型
-function getRandomChartType() {
-  const types = ['line', 'bar', 'pie']
-  return types[Math.floor(Math.random() * types.length)]
-}
-
-// 切换管理员面板
-function toggleAdminPanel() {
-  adminPanel.classList.toggle('active')
-}
-
-// 加载模板数据
-function loadTemplates() {
-  // 模拟从服务器获取模板数据
-  templates = [
-    { id: 1, name: '销售趋势', description: '过去7天的销售趋势', sql: 'SELECT date, SUM(amount) FROM sales WHERE date >= DATE_SUB(CURDATE(), INTERVAL 7 DAY) GROUP BY date' },
-    { id: 2, name: '产品分类统计', description: '各产品类别的销售额', sql: 'SELECT category, SUM(amount) FROM sales GROUP BY category' }
-  ]
-
-  renderTemplates()
-}
-
-// 渲染模板列表
-function renderTemplates() {
-  templateList.innerHTML = ''
-
-  if (templates.length === 0) {
-    const emptyMessage = document.createElement('li')
-    emptyMessage.textContent = '暂无模板'
-    emptyMessage.style.fontStyle = 'italic'
-    emptyMessage.style.color = '#718096'
-    templateList.appendChild(emptyMessage)
-    return
-  }
-
-  templates.forEach(template => {
-    const li = document.createElement('li')
-
-    const templateInfo = document.createElement('div')
-    templateInfo.className = 'template-info'
-    templateInfo.textContent = `${template.name} - ${template.description}`
-
-    const actions = document.createElement('div')
-    actions.className = 'template-actions'
-
-    const editBtn = document.createElement('button')
-    editBtn.innerHTML = '<i class="fas fa-edit"></i>'
-    editBtn.addEventListener('click', () => editTemplate(template.id))
-
-    const deleteBtn = document.createElement('button')
-    deleteBtn.innerHTML = '<i class="fas fa-trash"></i>'
-    deleteBtn.addEventListener('click', () => deleteTemplate(template.id))
-
-    actions.appendChild(editBtn)
-    actions.appendChild(deleteBtn)
-
-    li.appendChild(templateInfo)
-    li.appendChild(actions)
-
-    templateList.appendChild(li)
-  })
-}
-
-// 编辑模板
-function editTemplate(id) {
-  const template = templates.find(t => t.id === id)
-  if (!template) return
-
-  currentTemplateId = id
-  templateName.value = template.name
-  templateDescription.value = template.description
-  templateSQL.value = template.sql
-}
-
-// 删除模板
-function deleteTemplate(id) {
-  if (confirm('确定要删除此模板吗？')) {
-    templates = templates.filter(t => t.id !== id)
-    renderTemplates()
-
-    // 如果正在编辑被删除的模板，重置表单
-    if (currentTemplateId === id) {
-      resetTemplateForm()
-    }
-  }
-}
-
-// 保存模板
-function saveTemplate() {
-  const name = templateName.value.trim()
-  const description = templateDescription.value.trim()
-  const sql = templateSQL.value.trim()
-
-  if (!name || !description || !sql) {
-    alert('请填写所有字段')
-    return
-  }
-
-  if (currentTemplateId) {
-    // 更新现有模板
-    const index = templates.findIndex(t => t.id === currentTemplateId)
-    if (index !== -1) {
-      templates[index] = {
-        id: currentTemplateId,
-        name,
-        description,
-        sql
-      }
-    }
-  } else {
-    // 添加新模板
-    const newId = templates.length > 0 ? Math.max(...templates.map(t => t.id)) + 1 : 1
-    templates.push({
-      id: newId,
-      name,
-      description,
-      sql
+  // 工具函数
+  const utils = {
+    getRandomItem: arr => arr[Math.floor(Math.random() * arr.length)],
+    createChartData: () => ({
+      labels: ['一月', '二月', '三月', '四月', '五月', '六月', '七月'],
+      data: Array.from({ length: 7 }, () => Math.floor(Math.random() * 100))
     })
   }
 
-  renderTemplates()
-  resetTemplateForm()
-}
+  // 消息处理
+  const messageHandler = {
+    send: async () => {
+      const message = $('#userInput').val().trim()
+      if (!message) return
 
-// 重置模板表单
-function resetTemplateForm() {
-  currentTemplateId = null
-  templateForm.reset()
+      messageHandler.addToChat(message, 'user')
+      $('#userInput').val('')
+
+      const loadingMessage = messageHandler.addToChat('正在分析您的问题...', 'assistant')
+
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/query`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ user_input: message })
+        })
+
+        const result = await response.json()
+        $(loadingMessage).remove()
+
+        if (result.status === 'success') {
+          state.currentQueryId = result.query_id
+          messageHandler.displayResponse(result)
+        } else {
+          messageHandler.addToChat('抱歉，处理您的请求时出现错误。', 'assistant')
+        }
+      } catch (error) {
+        $(loadingMessage).remove()
+        messageHandler.addToChat('抱歉，服务器出现错误。', 'assistant')
+      }
+    },
+
+    displayResponse: (result) => {
+      const $message = $(messageHandler.addToChat('', 'assistant'))
+      const $content = $message.find('.message-content')
+
+      if (result.sql_query) {
+        $content.append($('<pre>').text(result.sql_query))
+      }
+
+      if (result.data && result.data.length > 0) {
+        if (result.suggested_visualization) {
+          chartHandler.add($message, result.suggested_visualization, result.data)
+        } else {
+          // 显示表格数据
+          const $table = $('<table>').addClass('table table-sm')
+          // ... 构建表格逻辑 ...
+          $content.append($table)
+        }
+      }
+    },
+
+    addToChat: (content, type) => {
+      const messageHtml = `
+        <div class="message ${type}">
+          <div class="message-content">${content}</div>
+          ${type === 'assistant' ? `
+            <div class="feedback">
+              <button class="like"><i class="fas fa-thumbs-up"></i></button>
+              <button class="dislike"><i class="fas fa-thumbs-down"></i></button>
+            </div>
+          ` : ''}
+        </div>
+      `
+      const $message = $(messageHtml)
+      $('#messageArea').append($message).scrollTop($('#messageArea')[0].scrollHeight)
+      return $message[0]
+    }
+  }
+
+  // 反馈处理
+  const feedbackHandler = {
+    submit: async (level) => {
+      if (!state.currentQueryId) return
+
+      try {
+        await fetch(`${API_BASE_URL}/api/satisfaction`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            query_id: state.currentQueryId,
+            satisfaction_level: level
+          })
+        })
+      } catch (error) {
+        console.error('提交反馈失败:', error)
+      }
+    }
+  }
+
+  // 图表处理
+  const chartHandler = {
+    add: ($messageDiv, type, data) => {
+      const $container = $('<div>').addClass('chart-container')
+      const $canvas = $('<canvas>')
+      $container.append($canvas)
+      $messageDiv.find('.message-content').append($container)
+
+      const { labels, data: chartData } = utils.createChartData()
+      const chartConfigs = {
+        line: {
+          type: 'line',
+          data: {
+            labels,
+            datasets: [{
+              label: '数据趋势',
+              data: chartData,
+              borderColor: '#3182ce',
+              backgroundColor: 'rgba(49, 130, 206, 0.1)',
+              tension: 0.3,
+              fill: true
+            }]
+          }
+        },
+        bar: {
+          type: 'bar',
+          data: {
+            labels,
+            datasets: [{
+              label: '数据统计',
+              data: chartData,
+              backgroundColor: 'rgba(49, 130, 206, 0.7)'
+            }]
+          }
+        },
+        pie: {
+          type: 'pie',
+          data: {
+            labels,
+            datasets: [{
+              data: chartData,
+              backgroundColor: [
+                '#3182ce', '#38b2ac', '#4299e1', '#9f7aea',
+                '#ed8936', '#ecc94b', '#48bb78'
+              ]
+            }]
+          }
+        }
+      }
+
+      new Chart($canvas[0].getContext('2d'), {
+        ...chartConfigs[type],
+        options: {
+          responsive: true,
+          maintainAspectRatio: false
+        }
+      })
+    }
+  }
+
+  // 模板管理
+  const templateHandler = {
+    load: async () => {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/templates/`)
+        state.templates = await response.json()
+        templateHandler.render()
+      } catch (error) {
+        console.error('加载模板失败:', error)
+      }
+    },
+
+    render: () => {
+      const $list = $('#templateList').empty()
+
+      if (state.templates.length === 0) {
+        $list.append(
+          $('<li>暂无模板</li>')
+            .css({ fontStyle: 'italic', color: '#718096' })
+        )
+        return
+      }
+
+      state.templates.forEach(template => {
+        const $li = $('<li>').addClass('list-group-item d-flex justify-content-between align-items-center')
+        $li.append($('<div>').text(`${template.name} - ${template.description}`))
+
+        const $actions = $('<div>').addClass('template-actions')
+        $actions.append(
+          $('<button>').html('<i class="fas fa-edit"></i>').click(() => templateHandler.edit(template.id)),
+          $('<button>').html('<i class="fas fa-trash"></i>').click(() => templateHandler.delete(template.id))
+        )
+
+        $li.append($actions)
+        $list.append($li)
+      })
+    },
+
+    edit: (id) => {
+      const template = state.templates.find(t => t.id === id)
+      if (!template) return
+
+      state.currentTemplateId = id
+      $('#templateName').val(template.name)
+      $('#templateDescription').val(template.description)
+      $('#templateSQL').val(template.sql)
+    },
+
+    delete: async (id) => {
+      if (!confirm('确定要删除此模板吗？')) return
+
+      try {
+        await fetch(`${API_BASE_URL}/api/templates/${id}`, { method: 'DELETE' })
+        await templateHandler.load()
+
+        if (state.currentTemplateId === id) {
+          templateHandler.resetForm()
+        }
+      } catch (error) {
+        alert('删除模板失败')
+        console.error(error)
+      }
+    },
+
+    save: async (e) => {
+      e.preventDefault()
+      const formData = {
+        scenario: $('#templateName').val().trim(),
+        description: $('#templateDescription').val().trim(),
+        sql_text: $('#templateSQL').val().trim()
+      }
+
+      if (!formData.scenario || !formData.description || !formData.sql_text) {
+        alert('请填写所有字段')
+        return
+      }
+
+      try {
+        if (state.currentTemplateId) {
+          await fetch(`${API_BASE_URL}/api/templates/${state.currentTemplateId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData)
+          })
+        } else {
+          await fetch(`${API_BASE_URL}/api/templates/`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(formData)
+          })
+        }
+
+        await templateHandler.load()
+        templateHandler.resetForm()
+      } catch (error) {
+        alert('保存模板失败')
+        console.error(error)
+      }
+    },
+
+    resetForm: () => {
+      state.currentTemplateId = null
+      $('#templateForm').trigger('reset')
+    }
+  }
+
+  // 事件绑定
+  $('#sendBtn').on('click', messageHandler.send)
+  $('#userInput').on('keypress', e => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault()
+      messageHandler.send()
+    }
+  })
+
+  $(document).on('click', '.feedback button', function () {
+    const $btn = $(this)
+    const level = $btn.hasClass('like') ? 'satisfied' : 'unsatisfied'
+
+    $btn.closest('.feedback').find('button').removeClass('active')
+    $btn.addClass('active')
+
+    feedbackHandler.submit(level)
+  })
+
+  $('#templateForm').on('submit', templateHandler.save)
+  $('#cancelTemplateBtn').on('click', templateHandler.resetForm)
+
+  // 初始化
+  templateHandler.load()
+})
+
+// 切换管理员面板
+function toggleAdminPanel() {
+  $('#adminPanel').toggleClass('active')
 }
