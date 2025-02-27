@@ -11,7 +11,7 @@ BUSINESS_DB_CONFIG = {
     "port": Config.DB_PORT,
     "user": Config.DB_USER,
     "password": Config.DB_PASSWORD,
-    "database": "chat_bi",  # 业务数据库名
+    "database": Config.DB_NAME,
 }
 
 # 系统数据库连接池配置
@@ -22,7 +22,7 @@ SYSTEM_DB_CONFIG = {
     "port": Config.DB_PORT,
     "user": Config.DB_USER,
     "password": Config.DB_PASSWORD,
-    "database": "chat_bi_sys",  # 系统数据库名
+    "database": Config.DB_SYS_NAME,
 }
 
 print(

@@ -8,8 +8,8 @@ class Config:
     DB_PORT = int(os.getenv("DB_PORT", 33306))
     DB_USER = os.getenv("DB_USER", "root")
     DB_PASSWORD = os.getenv("DB_PASSWORD", "")
-    DB_NAME = os.getenv("DB_NAME", "chat_bi")
-    DB_SYS_NAME = os.getenv("DB_SYS_NAME", "chat_bi_sys")
+    DB_NAME = os.getenv("DB_NAME", "bi_query_data")
+    DB_SYS_NAME = os.getenv("DB_SYS_NAME", "bi_system")
 
     MILVUS_HOST = os.getenv("MILVUS_HOST", "localhost")
     MILVUS_PORT = os.getenv("MILVUS_PORT", "19530")

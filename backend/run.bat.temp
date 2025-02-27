@@ -21,7 +21,8 @@ set DB_HOST=127.0.0.1
 set DB_PORT=13306
 set DB_USER=root
 set DB_PASSWORD=admin123456
-set DB_NAME=chat_bi
+set DB_NAME=query_db
+set DB_SYS_NAME=system_db
 
 set "MILVUS_HOST=172.22.220.64"
 set "MILVUS_PORT=19530"

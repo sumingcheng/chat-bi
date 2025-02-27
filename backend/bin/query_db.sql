@@ -1,11 +1,11 @@
--- 如果数据库存在则删除
-DROP DATABASE IF EXISTS chat_bi;
+
+DROP DATABASE IF EXISTS query_db;
 
 -- 创建新的数据库
-CREATE DATABASE IF NOT EXISTS chat_bi;
+CREATE DATABASE IF NOT EXISTS query_db;
 
 -- 切换到数据库
-USE chat_bi;
+USE query_db;
 
 -- 创建 category（产品类别）表
 create table

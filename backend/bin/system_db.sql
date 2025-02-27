@@ -1,9 +1,9 @@
 -- 创建系统数据库
-DROP DATABASE IF EXISTS chat_bi_sys;
+DROP DATABASE IF EXISTS query_sys;
 
-CREATE DATABASE chat_bi_sys;
+CREATE DATABASE query_sys;
 
-USE chat_bi_sys;
+USE query_sys;
 
 -- 创建SQL模板表
 CREATE TABLE

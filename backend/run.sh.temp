@@ -26,8 +26,8 @@ export DB_HOST="127.0.0.1"
 export DB_PORT=13306
 export DB_USER="root"
 export DB_PASSWORD="admin123456"
-export DB_NAME="chat_bi"
-
+export DB_NAME="query_db"
+export DB_SYS_NAME="system_db"
 export MILVUS_HOST="172.22.220.64"
 export MILVUS_PORT="19530"
 
