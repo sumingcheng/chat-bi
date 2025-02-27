@@ -173,3 +173,4 @@ backend/bin/db_ddl.json
 
 backend/run.sh
 backend/run.bat
+backend/bin/db_ddl.json

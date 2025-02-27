@@ -27,7 +27,6 @@ SYSTEM_DB_CONFIG = {
 business_pool = mysql.connector.pooling.MySQLConnectionPool(**BUSINESS_DB_CONFIG)
 system_pool = mysql.connector.pooling.MySQLConnectionPool(**SYSTEM_DB_CONFIG)
 
-
 def get_business_db_connection():
     """
     获取业务数据库连接
@@ -38,7 +37,6 @@ def get_business_db_connection():
         logger.error(f"获取业务数据库连接失败: {e}")
         raise
 
-
 def get_system_db_connection():
     """
     获取系统数据库连接
@@ -48,7 +46,6 @@ def get_system_db_connection():
     except Exception as e:
         logger.error(f"获取系统数据库连接失败: {e}")
         raise
-
 
 def execute_query(sql: str, params: tuple = None, is_system_db: bool = False):
     """
