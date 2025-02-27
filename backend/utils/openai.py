@@ -2,8 +2,13 @@ from openai import OpenAI
 from openai import OpenAIError
 from journal.logging import logger
 from config.main import Config
+import httpx
 
-client = OpenAI(api_key=Config.OPENAI_API_KEY, base_url="https://api.deepseek.com")
+client = OpenAI(
+    api_key=Config.OPENAI_API_KEY,
+    base_url="https://api.deepseek.com",
+    http_client=httpx.Client(verify=False),
+)
 
 
 async def call_openai_api(messages: list, **kwargs) -> str:
