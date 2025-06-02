@@ -16,7 +16,6 @@ api_router = APIRouter(prefix="/api")
 # 将子路由器挂载到主API路由器
 api_router.include_router(query, tags=["查询"])
 
-
 # 将主API路由器注册到应用
 app.include_router(api_router)
 

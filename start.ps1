@@ -13,10 +13,10 @@ if ($envFile) {
 }
 
 # 代理设置
-$env:HTTP_PROXY  = "http://127.0.0.1:7890"
-$env:HTTPS_PROXY = "http://127.0.0.1:7890"
+# $env:HTTP_PROXY  = "http://127.0.0.1:7890"
+# $env:HTTPS_PROXY = "http://127.0.0.1:7890"
 
-$env:NO_PROXY = "localhost,127.0.0.1,172.19.221.125"
+# $env:NO_PROXY = "localhost,127.0.0.1,172.19.221.125"
 
 # Python 无缓冲输出
 $env:PYTHONUNBUFFERED   = "1"
