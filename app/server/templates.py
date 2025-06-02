@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException
 from typing import List
-from models.schemas import SQLTemplate, SQLTemplateCreate, SQLTemplateUpdate
+from app.models.schemas import SQLTemplate, SQLTemplateCreate, SQLTemplateUpdate
 from database.mysql import get_system_db_connection
 from journal.logging import logger
 

@@ -2,7 +2,7 @@ import logging
 import asyncio
 import sys
 from pathlib import Path
-from database.base import init_business_db, init_system_db, close_connections
+from app.database.base import init_business_db, init_system_db, close_connections
 
 # 添加项目根目录到路径
 project_root = Path(__file__).parent.parent

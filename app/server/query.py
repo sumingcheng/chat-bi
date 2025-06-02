@@ -1,6 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
-from models.schemas import QueryRequest, QueryResponse
+from app.models.schemas import QueryRequest, QueryResponse
 from handlers.query_handler import process_query
 from journal.logging import logger
 from database.connection import get_system_db

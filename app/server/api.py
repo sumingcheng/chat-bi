@@ -1,9 +1,9 @@
 from fastapi import FastAPI, APIRouter
 from middleware.cors import mw_cors
-from server.query import router as query_router
-from server.templates import router as templates_router
-from server.history import router as history_router
-from server.satisfaction import router as satisfaction_router
+from app.server.query import router as query_router
+from app.server.templates import router as templates_router
+from app.server.history import router as history_router
+from app.server.satisfaction import router as satisfaction_router
 
 # 创建FastAPI应用
 app = FastAPI(

@@ -1,10 +1,13 @@
-from typing import Dict, Any, List, Tuple
-from utils.openai import call_openai_api
 import json
+from typing import Dict, Any, List, Tuple
+from app.common.openai_clinet import call_openai_api
+
 
 class ParameterResolver:
     @staticmethod
-    async def resolve_parameters(user_input: str, required_params: List[str]) -> Dict[str, Any]:
+    async def resolve_parameters(
+        user_input: str, required_params: List[str]
+    ) -> Dict[str, Any]:
         """
         解析用户输入中的参数，处理歧义
         """
@@ -23,7 +26,7 @@ class ParameterResolver:
 
             返回格式: JSON对象
             {
-                "parameters": {参数名: 参数值},
+                "parameters": {"参数名": 参数值},
                 "ambiguities": [{
                     "param": "参数名",
                     "options": ["候选值1", "候选值2"],
@@ -33,10 +36,12 @@ class ParameterResolver:
             }
             """
 
-            response = await call_openai_api([
-                {"role": "system", "content": "你是一个参数提取专家"},
-                {"role": "user", "content": prompt}
-            ])
+            response = await call_openai_api(
+                [
+                    {"role": "system", "content": "你是一个参数提取专家"},
+                    {"role": "user", "content": prompt},
+                ]
+            )
 
             result = json.loads(response)
             return result["parameters"], result.get("ambiguities", [])
@@ -45,7 +50,9 @@ class ParameterResolver:
             raise ValueError(f"参数解析失败: {e}")
 
     @staticmethod
-    async def resolve_parameter_conflicts(params: Dict[str, Any], ambiguities: List[Dict]) -> Tuple[Dict[str, Any], List[Dict]]:
+    async def resolve_parameter_conflicts(
+        params: Dict[str, Any], ambiguities: List[Dict]
+    ) -> Tuple[Dict[str, Any], List[Dict]]:
         """
         处理参数冲突和歧义
         """
@@ -68,4 +75,4 @@ class ParameterResolver:
         """
         验证是否所有必需参数都已提供
         """
-        return all(param in params for param in required_params) 
+        return all(param in params for param in required_params)

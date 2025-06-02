@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from models.schemas import SatisfactionRequest
+from app.models.schemas import SatisfactionRequest
 from database.mysql import get_system_db_connection
 from journal.logging import logger
 

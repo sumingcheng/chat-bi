@@ -1,5 +1,5 @@
 import httpx
-from backend.config.app_config import Config
+from app.config.app_config import Config
 
 
 def get_text_embedding(text):

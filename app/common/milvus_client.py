@@ -1,4 +1,4 @@
-from journal.logging import logger
+import logging
 from pymilvus import (
     connections,
     FieldSchema,
@@ -7,8 +7,10 @@ from pymilvus import (
     Collection,
     utility,
 )
-from utils.embedding_model import get_text_embedding
-from backend.config.app_config import Config
+from app.common.embedding_client import get_text_embedding
+from app.config.app_config import Config
+
+logger = logging.getLogger(__name__)
 
 
 # 连接到 Milvus
