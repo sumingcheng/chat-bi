@@ -2,6 +2,7 @@ import json
 import logging
 import uuid
 from decimal import Decimal
+from datetime import date, datetime, time
 from typing import Dict, Any, List, Optional
 from app.common.milvus_client import milvus_client
 from app.common.embedding_client import get_text_embedding
@@ -15,9 +16,13 @@ logger = logging.getLogger(__name__)
 
 
 def convert_decimals_to_float(obj: Any) -> Any:
-    """递归转换Decimal为float"""
+    """递归转换不可JSON序列化的类型"""
     if isinstance(obj, Decimal):
         return float(obj)
+    elif isinstance(obj, (date, datetime)):
+        return obj.isoformat()
+    elif isinstance(obj, time):
+        return obj.strftime('%H:%M:%S')
     elif isinstance(obj, dict):
         return {key: convert_decimals_to_float(value) for key, value in obj.items()}
     elif isinstance(obj, list):
