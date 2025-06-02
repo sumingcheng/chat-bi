@@ -1,9 +1,8 @@
-import logging
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker, declarative_base
 from app.config.app_config import Config
-
-logger = logging.getLogger(__name__)
+# 使用自定义日志配置
+from app.config.app_log import logger
 
 # 创建基础模型类
 Base = declarative_base()

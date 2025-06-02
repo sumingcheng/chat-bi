@@ -6,7 +6,7 @@ logger = logging.getLogger(__name__)
 
 
 class MilvusClient:
-    """Milvus 连接池客户端"""
+    """Milvus连接池客户端"""
 
     _instance = None
     _is_connected = False
@@ -21,7 +21,7 @@ class MilvusClient:
             self.connect()
 
     def connect(self):
-        """连接到 Milvus"""
+        """连接到Milvus"""
         try:
             host = Config.MILVUS_HOST
             port = Config.MILVUS_PORT

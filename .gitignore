@@ -167,10 +167,8 @@ start-dev.sh
 docker-compose-dev.yaml
 /deploy/volumes/
 
-backend/bin/ddl_generate.sh
-backend/bin/ddl_generate.bat
-backend/bin/db_ddl.json
+/deploy/etcd  
+/deploy/milvus 
+/deploy/minio 
+/deploy/mysql
 
-backend/run.sh
-backend/run.bat
-backend/bin/db_ddl.json

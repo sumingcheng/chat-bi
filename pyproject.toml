@@ -7,6 +7,7 @@ requires-python = ">=3.10"
 dependencies = [
   "aiomysql>=0.2.0",
   "fastapi>=0.115.12",
+  "faker>=30.5.0",
   "openai>=1.82.1",
   "pydantic>=2.11.5",
   "pymilvus>=2.5.10",
@@ -14,4 +15,5 @@ dependencies = [
   "sqlalchemy>=2.0.41",
   "sqlparse>=0.5.3",
   "uvicorn>=0.34.3",
+  "cryptography>=45.0.3",
 ]

@@ -31,7 +31,6 @@ def validate_sql_query(sql_query: str) -> bool:
         logger.warning("SQL查询为空")
         raise ValueError("SQL查询不能为空")
 
-    # 解析SQL语句
     try:
         parsed = sqlparse.parse(sql_query)
         logger.debug("SQL语法解析成功")
@@ -43,7 +42,6 @@ def validate_sql_query(sql_query: str) -> bool:
         logger.error("无法解析SQL语句")
         raise ValueError("无法解析SQL语句")
 
-    # 检查每个语句
     for statement in parsed:
         if statement.get_type() != "SELECT":
             logger.warning(f"发现非SELECT语句: {statement.get_type()}")
@@ -70,7 +68,6 @@ def contains_dangerous_keywords(statement) -> bool:
         if token.ttype is Keyword and token.value.upper() in DANGEROUS_KEYWORDS:
             logger.warning(f"发现危险关键字: {token.value}")
             return True
-        # 检查字符串中是否包含危险操作
         if hasattr(token, "value") and isinstance(token.value, str):
             token_upper = token.value.upper()
             for keyword in DANGEROUS_KEYWORDS:
@@ -89,10 +86,8 @@ def sanitize_sql_query(sql_query: str) -> str:
         logger.debug("SQL查询为空，返回空字符串")
         return ""
 
-    # 解析并格式化SQL
     try:
         parsed = sqlparse.parse(sql_query)[0]
-        # 移除注释
         formatted = sqlparse.format(
             str(parsed), strip_comments=True, strip_whitespace=True
         )
@@ -100,7 +95,6 @@ def sanitize_sql_query(sql_query: str) -> str:
         return formatted.strip()
     except Exception as e:
         logger.warning(f"SQL解析失败，使用基础清理: {e}")
-        # 如果解析失败，返回清理后的原始查询
         cleaned = " ".join(sql_query.split())
         logger.debug("基础清理完成")
         return cleaned

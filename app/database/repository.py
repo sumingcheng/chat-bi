@@ -15,9 +15,7 @@ class BusinessRepository:
     async def execute_query(
         sql: str, params: Dict[str, Any] = None
     ) -> List[Dict[str, Any]]:
-        """
-        执行业务数据库查询
-        """
+        """执行业务数据库查询"""
         try:
             logger.debug(f"执行业务数据库查询: {sql}")
             if params:
@@ -41,22 +39,18 @@ class BusinessRepository:
 
     @staticmethod
     async def get_database_schema() -> Dict[str, Any]:
-        """
-        获取业务数据库的完整Schema信息
-        """
+        """获取业务数据库Schema"""
         try:
             logger.info("开始获取数据库Schema信息")
 
             schema_info = {"tables": [], "relationships": []}
 
-            # 获取所有表的信息
             for model in get_business_models():
                 table_info = await BusinessRepository._get_table_info(
                     model.__tablename__
                 )
                 schema_info["tables"].append(table_info)
 
-            # 获取外键关系
             relationships = await BusinessRepository._get_foreign_keys()
             schema_info["relationships"] = relationships
 
@@ -69,10 +63,7 @@ class BusinessRepository:
 
     @staticmethod
     async def _get_table_info(table_name: str) -> Dict[str, Any]:
-        """
-        获取单个表的详细信息
-        """
-        # 获取表的列信息
+        """获取表详细信息"""
         column_sql = """
         SELECT 
             COLUMN_NAME as column_name,
@@ -91,7 +82,6 @@ class BusinessRepository:
             column_sql, {"table_name": table_name}
         )
 
-        # 获取表注释
         table_comment_sql = """
         SELECT TABLE_COMMENT as table_comment
         FROM information_schema.TABLES 
@@ -113,9 +103,7 @@ class BusinessRepository:
 
     @staticmethod
     async def _get_foreign_keys() -> List[Dict[str, Any]]:
-        """
-        获取所有外键关系
-        """
+        """获取外键关系"""
         fk_sql = """
         SELECT 
             TABLE_NAME as table_name,
@@ -133,9 +121,7 @@ class BusinessRepository:
 
     @staticmethod
     async def get_table_ddl(table_name: str) -> str:
-        """
-        获取指定表的DDL语句
-        """
+        """获取表DDL语句"""
         try:
             logger.debug(f"获取表 {table_name} 的DDL")
 
@@ -155,9 +141,7 @@ class BusinessRepository:
 
     @staticmethod
     async def get_all_tables_ddl() -> Dict[str, str]:
-        """
-        获取所有业务表的DDL语句
-        """
+        """获取所有业务表DDL"""
         try:
             logger.info("开始获取所有表的DDL")
 
@@ -182,9 +166,7 @@ class SystemRepository:
     async def execute_query(
         sql: str, params: Dict[str, Any] = None
     ) -> List[Dict[str, Any]]:
-        """
-        执行系统数据库查询
-        """
+        """执行系统数据库查询"""
         try:
             logger.debug(f"执行系统数据库查询: {sql}")
             if params:
@@ -215,9 +197,7 @@ class SystemRepository:
         satisfaction_level: str = None,
         visualization_type: str = "table",
     ):
-        """
-        保存查询历史
-        """
+        """保存查询历史"""
         try:
             logger.debug(f"保存查询历史，查询ID: {query_id}")
             from .system_models import QueryHistory
@@ -243,9 +223,7 @@ class SystemRepository:
 
     @staticmethod
     async def get_sql_templates(scenario: str = None) -> List[Dict[str, Any]]:
-        """
-        获取SQL模板
-        """
+        """获取SQL模板"""
         try:
             logger.debug(f"获取SQL模板，场景: {scenario or '全部'}")
 

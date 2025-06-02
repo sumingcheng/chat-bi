@@ -28,7 +28,6 @@ class Config:
 
     @classmethod
     def as_dict(cls):
-        # 敏感的配置项名称
         sensitive_keys = {"DB_PASSWORD", "OPENAI_API_KEY"}
         return {
             k: v

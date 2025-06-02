@@ -1,6 +1,7 @@
 import json
 import logging
 import uuid
+from decimal import Decimal
 from typing import Dict, Any, List, Optional
 from app.common.milvus_client import milvus_client
 from app.common.embedding_client import get_text_embedding
@@ -13,35 +14,37 @@ from app.agent.chat_bi_agent import ChatBIAgent
 logger = logging.getLogger(__name__)
 
 
+def convert_decimals_to_float(obj: Any) -> Any:
+    """递归转换Decimal为float"""
+    if isinstance(obj, Decimal):
+        return float(obj)
+    elif isinstance(obj, dict):
+        return {key: convert_decimals_to_float(value) for key, value in obj.items()}
+    elif isinstance(obj, list):
+        return [convert_decimals_to_float(item) for item in obj]
+    elif isinstance(obj, tuple):
+        return tuple(convert_decimals_to_float(item) for item in obj)
+    else:
+        return obj
+
+
 async def query_db_sql(
     user_question: str, session_id: Optional[str] = None
 ) -> Dict[str, Any]:
-    """
-    Chat-BI 核心查询接口
-
-    Args:
-        user_question: 用户自然语言问题
-        session_id: 可选的会话ID
-
-    Returns:
-        包含答案、可视化数据和SQL的响应
-    """
-    query_id = str(uuid.uuid4())[:12]  # 生成12位短UUID
+    """Chat-BI核心查询接口"""
+    query_id = str(uuid.uuid4())[:12]
 
     try:
         logger.info(f"开始处理查询 {query_id}: {user_question}")
 
-        # 1. 向量化用户问题
         user_embedding = get_text_embedding(user_question)
         logger.debug("用户问题向量化完成")
 
-        # 2. Milvus 相似度检索最佳SQL模板
         matched_template = await search_similar_template(user_embedding, user_question)
 
         if matched_template:
             logger.info(f"匹配到SQL模板: {matched_template['description']}")
 
-            # 3. 参数提取和填充模板
             final_sql = await fill_template_with_parameters(
                 user_question,
                 matched_template["sql_text"],
@@ -50,32 +53,26 @@ async def query_db_sql(
         else:
             logger.info("未匹配到合适模板，使用AI生成SQL")
 
-            # 4. AI生成SQL（带数据库Schema上下文）
             final_sql = await ChatBIAgent.generate_sql(user_question)
 
-        # 5. SQL安全检查
         validate_sql_query(final_sql)
         final_sql = sanitize_sql_query(final_sql)
 
-        # 6. 执行SQL查询
         query_result = await BusinessRepository.execute_query(final_sql)
 
-        # 7. 推荐可视化类型
         viz_type = suggest_visualization_type(query_result)
 
-        # 8. 生成自然语言答案
         answer = await ChatBIAgent.generate_answer(user_question, query_result)
 
-        # 9. 如果是新生成的SQL，存储为模板
         if not matched_template and query_result:
             await ChatBIAgent.save_template(user_question, final_sql, user_embedding)
 
-        # 10. 保存查询历史
+        serializable_result = convert_decimals_to_float(query_result)
         await SystemRepository.save_query_history(
             query_id=query_id,
             user_input=user_question,
             sql_query=final_sql,
-            result=json.dumps(query_result, ensure_ascii=False),
+            result=json.dumps(serializable_result, ensure_ascii=False),
             visualization_type=viz_type,
         )
 
@@ -88,7 +85,7 @@ async def query_db_sql(
                 "answer": answer,
                 "chart_data": {
                     "type": viz_type,
-                    "data": query_result,
+                    "data": convert_decimals_to_float(query_result),
                     "config": generate_chart_config(viz_type, query_result),
                 },
                 "sql": final_sql,
@@ -100,7 +97,6 @@ async def query_db_sql(
     except Exception as e:
         logger.error(f"查询 {query_id} 处理失败: {e}")
 
-        # 保存失败的查询历史
         await SystemRepository.save_query_history(
             query_id=query_id, user_input=user_question, result=f"查询失败: {str(e)}"
         )
@@ -115,9 +111,7 @@ async def query_db_sql(
 async def search_similar_template(
     user_embedding: List[float], user_question: str
 ) -> Optional[Dict[str, Any]]:
-    """
-    在Milvus中搜索相似的SQL模板
-    """
+    """在Milvus中搜索相似SQL模板"""
     try:
         if not milvus_client.has_collection("sql_templates"):
             logger.warning("Milvus中不存在sql_templates集合")
@@ -125,7 +119,6 @@ async def search_similar_template(
 
         collection = milvus_client.get_collection("sql_templates")
 
-        # 向量相似度搜索
         search_results = collection.search(
             data=[user_embedding],
             anns_field="embedding",
@@ -144,8 +137,7 @@ async def search_similar_template(
             best_match = search_results[0][0]
             similarity_score = best_match.score
 
-            # 相似度阈值判断
-            if similarity_score > 0.7:  # 可调整阈值
+            if similarity_score > 0.7:
                 return {
                     "template_id": best_match.entity.get("template_id"),
                     "description": best_match.entity.get("description"),
@@ -167,14 +159,11 @@ async def search_similar_template(
 async def fill_template_with_parameters(
     user_question: str, sql_template: str, required_params: List[str]
 ) -> str:
-    """
-    提取参数并填充SQL模板
-    """
+    """提取参数并填充SQL模板"""
     try:
         if not required_params:
             return sql_template
 
-        # 使用参数解析器提取参数
         params, ambiguities = await ParameterResolver.resolve_parameters(
             user_question, required_params
         )
@@ -182,7 +171,6 @@ async def fill_template_with_parameters(
         if ambiguities:
             logger.warning(f"参数解析存在歧义: {ambiguities}")
 
-        # 填充模板
         filled_sql = sql_template
         for param_name, param_value in params.items():
             placeholder = f"{{{param_name}}}"
@@ -191,46 +179,36 @@ async def fill_template_with_parameters(
         return filled_sql
 
     except Exception as e:
-        logger.error(f"参数填充失败: {e}")
-        raise
+        logger.error(f"模板参数填充失败: {e}")
+        return sql_template
 
 
 def generate_chart_config(viz_type: str, data: List[Dict[str, Any]]) -> Dict[str, Any]:
-    """
-    为不同图表类型生成配置
-    """
+    """生成图表配置"""
     if not data:
         return {}
 
     columns = list(data[0].keys())
-
-    config = {"title": "查询结果", "responsive": True}
-
+    
+    config = {
+        "title": "数据可视化",
+        "columns": columns
+    }
+    
     if viz_type == "bar":
-        config.update(
-            {
-                "xAxis": columns[0] if columns else "",
-                "yAxis": columns[1] if len(columns) > 1 else "",
-                "orientation": "vertical",
-            }
-        )
+        config.update({
+            "xField": columns[0] if columns else "",
+            "yField": columns[1] if len(columns) > 1 else "",
+        })
     elif viz_type == "line":
-        config.update(
-            {
-                "xAxis": columns[0] if columns else "",
-                "yAxis": columns[1] if len(columns) > 1 else "",
-                "smooth": True,
-            }
-        )
+        config.update({
+            "xField": columns[0] if columns else "",
+            "yField": columns[1] if len(columns) > 1 else "",
+        })
     elif viz_type == "pie":
-        config.update(
-            {
-                "labelField": columns[0] if columns else "",
-                "valueField": columns[1] if len(columns) > 1 else "",
-                "showLegend": True,
-            }
-        )
-    elif viz_type == "table":
-        config.update({"columns": columns, "pagination": len(data) > 20})
-
+        config.update({
+            "angleField": columns[1] if len(columns) > 1 else "",
+            "colorField": columns[0] if columns else "",
+        })
+    
     return config

@@ -4,7 +4,7 @@ import toast from 'react-hot-toast'
 // 创建axios实例
 const request = axios.create({
   baseURL: 'http://localhost:13000/api',
-  timeout: 30000,
+  timeout: 1000 * 60 * 60,
   headers: {
     'Content-Type': 'application/json',
   },

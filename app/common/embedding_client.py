@@ -3,9 +3,7 @@ from app.config.app_config import Config
 
 
 def get_text_embedding(text):
-    """
-    使用 Ollama 部署的模型获取文本嵌入向量
-    """
+    """使用Ollama模型获取文本嵌入向量"""
     try:
         with httpx.Client(verify=False) as client:
             response = client.post(

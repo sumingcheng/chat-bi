@@ -7,14 +7,9 @@ logger = logging.getLogger(__name__)
 
 
 async def generate_sql_with_context(user_question: str) -> str:
-    """
-    带数据库Schema上下文的AI SQL生成
-    """
+    """基于数据库Schema生成SQL查询"""
     try:
-        # 获取数据库Schema信息
         schema_info = await BusinessRepository.get_database_schema()
-
-        # 构建Schema描述
         schema_desc = build_schema_description(schema_info)
 
         prompt = f"""
@@ -25,26 +20,25 @@ async def generate_sql_with_context(user_question: str) -> str:
 
         用户问题: {user_question}
 
-        要求:
-        1. 只返回SQL查询语句，不要任何解释
+        **严格要求：**
+        1. 只返回SQL查询语句，不要任何解释、注释或markdown格式
         2. 使用标准MySQL语法
         3. 确保查询的安全性，只能是SELECT语句
         4. 如果需要JOIN，请使用表之间的外键关系
         5. 对于时间相关查询，假设当前时间为NOW()
+        6. 不要使用```sql```代码块标记
         
-        SQL查询:
+        直接返回SQL语句:
         """
 
         sql_response = await call_openai_api(
             [
-                {"role": "system", "content": "你是一个SQL查询专家，只返回SQL语句。"},
+                {"role": "system", "content": "你是一个SQL查询专家，只返回纯SQL语句，不要任何解释、注释或格式化标记。"},
                 {"role": "user", "content": prompt},
             ]
         )
 
-        # 清理响应，提取纯SQL
         sql_query = extract_sql_from_response(sql_response)
-
         return sql_query
 
     except Exception as e:
@@ -53,9 +47,7 @@ async def generate_sql_with_context(user_question: str) -> str:
 
 
 def build_schema_description(schema_info: Dict[str, Any]) -> str:
-    """
-    构建数据库Schema的文本描述
-    """
+    """构建数据库Schema文本描述"""
     description = "数据库表结构:\n\n"
 
     for table in schema_info.get("tables", []):
@@ -83,7 +75,6 @@ def build_schema_description(schema_info: Dict[str, Any]) -> str:
             description += "\n"
         description += "\n"
 
-    # 添加外键关系描述
     if schema_info.get("relationships"):
         description += "表关系:\n"
         for rel in schema_info["relationships"]:
@@ -93,10 +84,7 @@ def build_schema_description(schema_info: Dict[str, Any]) -> str:
 
 
 def extract_sql_from_response(response: str) -> str:
-    """
-    从AI响应中提取纯SQL语句
-    """
-    # 移除可能的markdown代码块标记
+    """从AI响应中提取纯SQL语句"""
     response = response.strip()
     if response.startswith("```sql"):
         response = response[6:]
@@ -106,34 +94,32 @@ def extract_sql_from_response(response: str) -> str:
     if response.endswith("```"):
         response = response[:-3]
 
-    # 移除多余的空白和换行
     response = response.strip()
-
     return response
 
 
 async def generate_template_description(user_question: str, sql_query: str) -> str:
-    """
-    为SQL模板生成描述
-    """
+    """为SQL模板生成描述"""
     try:
         prompt = f"""
         用户问题: {user_question}
         SQL查询: {sql_query}
         
         请为这个SQL查询生成一个简洁的功能描述，用于将来的模板匹配。
-        描述应该:
+        
+        **严格要求：**
         1. 概括查询的主要目的
         2. 突出查询的业务场景
         3. 长度控制在50字以内
         4. 使用中文
+        5. 只返回纯文本描述，不要任何格式化标记或解释
         """
 
         description = await call_openai_api(
             [
                 {
                     "role": "system",
-                    "content": "你是一个SQL分析专家，为SQL查询生成简洁描述。",
+                    "content": "你是一个SQL分析专家，为SQL查询生成简洁描述。只返回纯文本，不要任何格式化。",
                 },
                 {"role": "user", "content": prompt},
             ]
@@ -147,13 +133,10 @@ async def generate_template_description(user_question: str, sql_query: str) -> s
 
 
 def extract_sql_parameters(sql_query: str) -> List[str]:
-    """
-    从SQL中提取参数占位符（简单实现）
-    """
+    """从SQL中提取参数占位符"""
     import re
 
-    # 查找形如 {param_name} 的参数占位符
     pattern = r"\{(\w+)\}"
     matches = re.findall(pattern, sql_query)
 
-    return list(set(matches))  # 去重 
+    return list(set(matches)) 
