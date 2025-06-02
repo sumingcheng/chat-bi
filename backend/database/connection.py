@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
-from config.main import Config
+from backend.config.app_config import Config
 
 # 业务数据库
 business_engine = create_async_engine(

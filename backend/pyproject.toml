@@ -1,0 +1,16 @@
+[project]
+name = "backend"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "aiomysql>=0.2.0",
+    "fastapi>=0.115.12",
+    "openai>=1.82.1",
+    "pydantic>=2.11.5",
+    "pymilvus>=2.5.10",
+    "python-dotenv>=1.1.0",
+    "sqlalchemy>=2.0.41",
+    "uvicorn>=0.34.3",
+]

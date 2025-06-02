@@ -8,7 +8,7 @@ from pymilvus import (
     utility,
 )
 from utils.embedding_model import get_text_embedding
-from config.main import Config
+from backend.config.app_config import Config
 
 
 # 连接到 Milvus

@@ -1,7 +1,7 @@
 from openai import OpenAI
 from openai import OpenAIError
 from journal.logging import logger
-from config.main import Config
+from backend.config.app_config import Config
 import httpx
 
 client = OpenAI(

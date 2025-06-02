@@ -1,6 +1,6 @@
 import mysql.connector
 from mysql.connector import pooling
-from config.main import Config
+from backend.config.app_config import Config
 from journal.logging import logger
 
 # 业务数据库连接池配置

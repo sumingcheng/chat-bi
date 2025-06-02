@@ -1,5 +1,5 @@
 BACKEND_IMAGE_NAME ?= chat-bi-api
-BACKEND_IMAGE_TAG ?= v2.0.0
+BACKEND_IMAGE_TAG ?= v3.0.0
 
 DOCKERFILE_PATH = ./Dockerfile
 
