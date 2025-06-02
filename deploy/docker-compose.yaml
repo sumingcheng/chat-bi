@@ -2,24 +2,15 @@ services:
   chat-bi-api:
     image: chat-bi:v1.0.0
     container_name: chat-bi-api
-    depends_on:
-      - milvus-standalone
     ports:
       - '13000:13000'
-    environment:
-      - DB_HOST=mysql
-      - DB_PORT=3306
-      - DB_USER=root
-      - DB_PASSWORD=admin123456
-      - DB_NAME=chat_bi
-      - MILVUS_HOST=milvus-standalone
-      - MILVUS_PORT=19530
-      - OPENAI_API_KEY=
-      - HTTP_PROXY=http://127.0.0.1:7890
-      - HTTPS_PROXY=http://127.0.0.1:7890
+    env_file:
+      - ../.env
     restart: unless-stopped
     networks:
-      - chat-bi
+      - chat-bi-app
+    depends_on:
+      - chat-bi-frontend
 
   chat-bi-frontend:
     image: chat-bi-frontend:v1.0.0
@@ -30,102 +21,8 @@ services:
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
     networks:
-      - chat-bi
-
-  mysql:
-    image: mysql:8.0
-    container_name: chat-bi-mysql
-    environment:
-      - MYSQL_ROOT_PASSWORD=admin123456
-      - MYSQL_DATABASE=chat_bi
-      - MYSQL_CHARACTER_SET_SERVER=utf8mb4
-      - MYSQL_COLLATION_SERVER=utf8mb4_unicode_ci
-    ports:
-      - '3306:3306'
-    volumes:
-      - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/mysql:/var/lib/mysql
-    restart: unless-stopped
-    networks:
-      - chat-bi
-
-  milvus-etcd:
-    container_name: milvus-etcd
-    image: quay.io/coreos/etcd:v3.5.5
-    environment:
-      - ETCD_AUTO_COMPACTION_MODE=revision
-      - ETCD_AUTO_COMPACTION_RETENTION=1000
-      - ETCD_QUOTA_BACKEND_BYTES=4294967296
-      - ETCD_SNAPSHOT_COUNT=50000
-    volumes:
-      - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/etcd:/etcd
-    command: etcd -advertise-client-urls=http://milvus-etcd:2379 -listen-client-urls http://0.0.0.0:2379 --data-dir /etcd
-    healthcheck:
-      test: ['CMD', 'etcdctl', 'endpoint', 'health']
-      interval: 30s
-      timeout: 20s
-      retries: 3
-    networks:
-      - chat-bi
-
-  milvus-minio:
-    container_name: milvus-minio
-    image: minio/minio:RELEASE.2023-03-20T20-16-18Z
-    environment:
-      MINIO_ACCESS_KEY: minioadmin
-      MINIO_SECRET_KEY: minioadmin
-    ports:
-      - '9001:9001'
-      - '9000:9000'
-    volumes:
-      - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/minio:/minio_data
-    command: minio server /minio_data --console-address ":9001"
-    healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:9000/minio/health/live']
-      interval: 30s
-      timeout: 20s
-      retries: 3
-    networks:
-      - chat-bi
-
-  milvus-standalone:
-    container_name: milvus-standalone
-    image: milvusdb/milvus:v2.4.12
-    command: ['milvus', 'run', 'standalone']
-    security_opt:
-      - seccomp:unconfined
-    environment:
-      ETCD_ENDPOINTS: milvus-etcd:2379
-      MINIO_ADDRESS: milvus-minio:9000
-    volumes:
-      - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/milvus:/var/lib/milvus
-    healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:9091/healthz']
-      interval: 30s
-      start_period: 90s
-      timeout: 20s
-      retries: 3
-    ports:
-      - '19530:19530'
-      - '9091:9091'
-    depends_on:
-      - 'milvus-etcd'
-      - 'milvus-minio'
-    networks:
-      - chat-bi
-
-  milvus-attu:
-    image: zilliz/attu:v2.4
-    container_name: milvus-attu
-    ports:
-      - '19000:3000'
-    environment:
-      - MILVUS_URL=milvus-standalone:19530
-    restart: unless-stopped
-    depends_on:
-      - 'milvus-standalone'
-    networks:
-      - chat-bi
+      - chat-bi-app
 
 networks:
-  chat-bi:
+  chat-bi-app:
     driver: bridge

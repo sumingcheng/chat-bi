@@ -1,5 +1,5 @@
 from fastapi import FastAPI, APIRouter
-from middleware.cors import mw_cors
+from app.server.middleware.cors import mw_cors
 from app.server.api.query import query
 
 # 创建FastAPI应用

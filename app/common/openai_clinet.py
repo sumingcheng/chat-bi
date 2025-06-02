@@ -1,7 +1,7 @@
 import logging
 import httpx
-from app.common.openai_clinet import AsyncOpenAI
-from app.common.openai_clinet import OpenAIError
+from openai import AsyncOpenAI
+from openai import OpenAIError
 from app.config.app_config import Config
 
 logger = logging.getLogger(__name__)
