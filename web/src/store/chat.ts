@@ -12,7 +12,8 @@ export interface ChatMessage {
 interface ChatState {
   messages: ChatMessage[]
   loading: boolean
-  addMessage: (message: Omit<ChatMessage, 'id' | 'timestamp'>) => void
+  isLoading: boolean // 为了兼容新的组件
+  addMessage: (message: Omit<ChatMessage, 'id'>) => void
   setLoading: (loading: boolean) => void
   clearMessages: () => void
 }
@@ -20,16 +21,16 @@ interface ChatState {
 export const useChatStore = create<ChatState>((set) => ({
   messages: [],
   loading: false,
+  isLoading: false,
 
   addMessage: (message) => set((state) => ({
     messages: [...state.messages, {
       ...message,
       id: Date.now().toString(),
-      timestamp: new Date(),
     }]
   })),
 
-  setLoading: (loading) => set({ loading }),
+  setLoading: (loading) => set({ loading, isLoading: loading }),
 
   clearMessages: () => set({ messages: [] }),
 })) 
