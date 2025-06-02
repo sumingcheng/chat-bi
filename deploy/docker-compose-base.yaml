@@ -56,7 +56,7 @@ services:
 
   milvus-standalone:
     container_name: milvus-standalone
-    image: milvusdb/milvus:v2.4.12
+    image: milvusdb/milvus:v2.4.3
     command: ['milvus', 'run', 'standalone']
     security_opt:
       - seccomp:unconfined
@@ -81,7 +81,7 @@ services:
       - chat-bi-base
 
   milvus-attu:
-    image: zilliz/attu:v2.4
+    image: zilliz/attu:v2.4.12
     container_name: milvus-attu
     ports:
       - '19000:3000'

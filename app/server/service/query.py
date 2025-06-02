@@ -5,11 +5,10 @@ from typing import Dict, Any, List, Optional
 from app.common.milvus_client import milvus_client
 from app.common.embedding_client import get_text_embedding
 from app.common.parameter_resolver import ParameterResolver
-from app.common.openai_clinet import call_openai_api
 from app.common.visualization import suggest_visualization_type
 from app.database.validation import validate_sql_query, sanitize_sql_query
 from app.database.repository import BusinessRepository, SystemRepository
-from app.agent.parse_query_to_sql import parse_query_to_sql
+from app.agent.chat_bi_agent import ChatBIAgent
 
 logger = logging.getLogger(__name__)
 
@@ -52,7 +51,7 @@ async def query_db_sql(
             logger.info("未匹配到合适模板，使用AI生成SQL")
 
             # 4. AI生成SQL（带数据库Schema上下文）
-            final_sql = await generate_sql_with_context(user_question)
+            final_sql = await ChatBIAgent.generate_sql(user_question)
 
         # 5. SQL安全检查
         validate_sql_query(final_sql)
@@ -65,11 +64,11 @@ async def query_db_sql(
         viz_type = suggest_visualization_type(query_result)
 
         # 8. 生成自然语言答案
-        answer = await generate_natural_answer(user_question, query_result)
+        answer = await ChatBIAgent.generate_answer(user_question, query_result)
 
         # 9. 如果是新生成的SQL，存储为模板
         if not matched_template and query_result:
-            await store_new_template(user_question, final_sql, user_embedding)
+            await ChatBIAgent.save_template(user_question, final_sql, user_embedding)
 
         # 10. 保存查询历史
         await SystemRepository.save_query_history(
@@ -194,239 +193,6 @@ async def fill_template_with_parameters(
     except Exception as e:
         logger.error(f"参数填充失败: {e}")
         raise
-
-
-async def generate_sql_with_context(user_question: str) -> str:
-    """
-    带数据库Schema上下文的AI SQL生成
-    """
-    try:
-        # 获取数据库Schema信息
-        schema_info = await BusinessRepository.get_database_schema()
-
-        # 构建Schema描述
-        schema_desc = build_schema_description(schema_info)
-
-        prompt = f"""
-        你是一个SQL专家。基于以下数据库Schema信息，将用户问题转换为SQL查询。
-
-        数据库Schema:
-        {schema_desc}
-
-        用户问题: {user_question}
-
-        要求:
-        1. 只返回SQL查询语句，不要任何解释
-        2. 使用标准MySQL语法
-        3. 确保查询的安全性，只能是SELECT语句
-        4. 如果需要JOIN，请使用表之间的外键关系
-        5. 对于时间相关查询，假设当前时间为NOW()
-        
-        SQL查询:
-        """
-
-        sql_response = await call_openai_api(
-            [
-                {"role": "system", "content": "你是一个SQL查询专家，只返回SQL语句。"},
-                {"role": "user", "content": prompt},
-            ]
-        )
-
-        # 清理响应，提取纯SQL
-        sql_query = extract_sql_from_response(sql_response)
-
-        return sql_query
-
-    except Exception as e:
-        logger.error(f"AI SQL生成失败: {e}")
-        raise
-
-
-def build_schema_description(schema_info: Dict[str, Any]) -> str:
-    """
-    构建数据库Schema的文本描述
-    """
-    description = "数据库表结构:\n\n"
-
-    for table in schema_info.get("tables", []):
-        table_name = table["table_name"]
-        table_comment = table.get("table_comment", "")
-
-        description += f"表名: {table_name}"
-        if table_comment:
-            description += f" ({table_comment})"
-        description += "\n"
-
-        for column in table.get("columns", []):
-            col_name = column["column_name"]
-            col_type = column["data_type"]
-            col_comment = column.get("column_comment", "")
-            is_key = column.get("column_key", "")
-
-            description += f"  - {col_name} ({col_type})"
-            if is_key == "PRI":
-                description += " [主键]"
-            elif is_key == "MUL":
-                description += " [外键]"
-            if col_comment:
-                description += f" // {col_comment}"
-            description += "\n"
-        description += "\n"
-
-    # 添加外键关系描述
-    if schema_info.get("relationships"):
-        description += "表关系:\n"
-        for rel in schema_info["relationships"]:
-            description += f"  {rel['table_name']}.{rel['column_name']} -> {rel['referenced_table_name']}.{rel['referenced_column_name']}\n"
-
-    return description
-
-
-def extract_sql_from_response(response: str) -> str:
-    """
-    从AI响应中提取纯SQL语句
-    """
-    # 移除可能的markdown代码块标记
-    response = response.strip()
-    if response.startswith("```sql"):
-        response = response[6:]
-    elif response.startswith("```"):
-        response = response[3:]
-
-    if response.endswith("```"):
-        response = response[:-3]
-
-    # 移除多余的空白和换行
-    response = response.strip()
-
-    return response
-
-
-async def generate_natural_answer(
-    user_question: str, query_result: List[Dict[str, Any]]
-) -> str:
-    """
-    基于查询结果生成自然语言答案
-    """
-    try:
-        if not query_result:
-            return "根据您的查询条件，没有找到相关数据。"
-
-        # 构建结果摘要
-        result_summary = f"查询返回了 {len(query_result)} 条记录。"
-
-        # 如果结果较少，可以具体描述
-        if len(query_result) <= 5:
-            sample_data = json.dumps(query_result[:3], ensure_ascii=False, indent=2)
-        else:
-            sample_data = json.dumps(query_result[:2], ensure_ascii=False, indent=2)
-
-        prompt = f"""
-        用户问题: {user_question}
-        
-        查询结果摘要: {result_summary}
-        样本数据: {sample_data}
-        
-        请基于查询结果，用自然语言回答用户的问题。要求:
-        1. 语言简洁明了
-        2. 突出关键数据
-        3. 如果有多条记录，给出总体概况
-        4. 用中文回答
-        """
-
-        answer = await call_openai_api(
-            [
-                {
-                    "role": "system",
-                    "content": "你是一个数据分析助手，根据查询结果回答用户问题。",
-                },
-                {"role": "user", "content": prompt},
-            ]
-        )
-
-        return answer
-
-    except Exception as e:
-        logger.error(f"生成自然语言答案失败: {e}")
-        return f"查询成功，共找到 {len(query_result)} 条相关记录。"
-
-
-async def store_new_template(
-    user_question: str, sql_query: str, user_embedding: List[float]
-):
-    """
-    将新生成的SQL存储为模板
-    """
-    try:
-        # 生成模板描述
-        description = await generate_template_description(user_question, sql_query)
-
-        # 提取SQL中的参数（简单实现）
-        required_params = extract_sql_parameters(sql_query)
-
-        # 存储到系统数据库
-        template_data = {
-            "description": description,
-            "sql_text": sql_query,
-            "scenario": "auto_generated",
-            "required_params": json.dumps(required_params),
-        }
-
-        # 这里可以调用SystemRepository保存模板
-        logger.info(f"存储新SQL模板: {description}")
-
-        # TODO: 存储到Milvus向量数据库
-        # 需要实现向Milvus插入新的模板向量
-
-    except Exception as e:
-        logger.error(f"存储新模板失败: {e}")
-
-
-async def generate_template_description(user_question: str, sql_query: str) -> str:
-    """
-    为SQL模板生成描述
-    """
-    try:
-        prompt = f"""
-        用户问题: {user_question}
-        SQL查询: {sql_query}
-        
-        请为这个SQL查询生成一个简洁的功能描述，用于将来的模板匹配。
-        描述应该:
-        1. 概括查询的主要目的
-        2. 突出查询的业务场景
-        3. 长度控制在50字以内
-        4. 使用中文
-        """
-
-        description = await call_openai_api(
-            [
-                {
-                    "role": "system",
-                    "content": "你是一个SQL分析专家，为SQL查询生成简洁描述。",
-                },
-                {"role": "user", "content": prompt},
-            ]
-        )
-
-        return description.strip()
-
-    except Exception as e:
-        logger.error(f"生成模板描述失败: {e}")
-        return f"基于用户问题生成的查询: {user_question[:30]}..."
-
-
-def extract_sql_parameters(sql_query: str) -> List[str]:
-    """
-    从SQL中提取参数占位符（简单实现）
-    """
-    import re
-
-    # 查找形如 {param_name} 的参数占位符
-    pattern = r"\{(\w+)\}"
-    matches = re.findall(pattern, sql_query)
-
-    return list(set(matches))  # 去重
 
 
 def generate_chart_config(viz_type: str, data: List[Dict[str, Any]]) -> Dict[str, Any]:

@@ -1,0 +1,84 @@
+import json
+import logging
+from typing import List
+from app.common.openai_clinet import call_openai_api
+
+logger = logging.getLogger(__name__)
+
+
+async def store_new_template(
+    user_question: str, sql_query: str, user_embedding: List[float]
+):
+    """
+    将新生成的SQL存储为模板
+    """
+    try:
+        # 生成模板描述
+        description = await generate_template_description(user_question, sql_query)
+
+        # 提取SQL中的参数（简单实现）
+        required_params = extract_sql_parameters(sql_query)
+
+        # 存储到系统数据库
+        template_data = {
+            "description": description,
+            "sql_text": sql_query,
+            "scenario": "auto_generated",
+            "required_params": json.dumps(required_params),
+        }
+
+        # 这里可以调用SystemRepository保存模板
+        logger.info(f"存储新SQL模板: {description}")
+
+        # TODO: 存储到Milvus向量数据库
+        # 需要实现向Milvus插入新的模板向量
+
+    except Exception as e:
+        logger.error(f"存储新模板失败: {e}")
+
+
+async def generate_template_description(user_question: str, sql_query: str) -> str:
+    """
+    为SQL模板生成描述
+    """
+    try:
+        prompt = f"""
+        用户问题: {user_question}
+        SQL查询: {sql_query}
+        
+        请为这个SQL查询生成一个简洁的功能描述，用于将来的模板匹配。
+        描述应该:
+        1. 概括查询的主要目的
+        2. 突出查询的业务场景
+        3. 长度控制在50字以内
+        4. 使用中文
+        """
+
+        description = await call_openai_api(
+            [
+                {
+                    "role": "system",
+                    "content": "你是一个SQL分析专家，为SQL查询生成简洁描述。",
+                },
+                {"role": "user", "content": prompt},
+            ]
+        )
+
+        return description.strip()
+
+    except Exception as e:
+        logger.error(f"生成模板描述失败: {e}")
+        return f"基于用户问题生成的查询: {user_question[:30]}..."
+
+
+def extract_sql_parameters(sql_query: str) -> List[str]:
+    """
+    从SQL中提取参数占位符（简单实现）
+    """
+    import re
+
+    # 查找形如 {param_name} 的参数占位符
+    pattern = r"\{(\w+)\}"
+    matches = re.findall(pattern, sql_query)
+
+    return list(set(matches))  # 去重 

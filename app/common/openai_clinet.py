@@ -16,7 +16,7 @@ client = AsyncOpenAI(
 async def call_openai_api(messages: list, **kwargs) -> str:
     try:
         response = await client.chat.completions.create(
-            model="deepseek-chat", messages=messages, temperature=0, **kwargs
+            model="deepseek-reasoner", messages=messages, temperature=0, **kwargs
         )
         return response.choices[0].message.content.strip()
     except OpenAIError as e:
