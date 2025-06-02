@@ -1,29 +1,31 @@
+import logging
 import asyncio
 import sys
 from pathlib import Path
+from database.base import init_business_db, init_system_db, close_connections
 
 # 添加项目根目录到路径
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
-from database.base import init_business_db, init_system_db, close_connections
+logger = logging.getLogger(__name__)
 
 
 async def main():
     try:
-        print("创建数据库表结构...")
+        logger.info("创建数据库表结构...")
         await init_business_db()
         await init_system_db()
-        print("✓ 数据库表创建完成")
+        logger.info("✓ 数据库表创建完成")
         
-        print("\n创建的表:")
-        print("业务库: category, customer, product, sales_order, order_item, sales")
-        print("系统库: sql_templates, sql_template_params, query_history")
+        logger.info("创建的表:")
+        logger.info("业务库: category, customer, product, sales_order, order_item, sales")
+        logger.info("系统库: sql_templates, sql_template_params, query_history")
         
         return True
         
     except Exception as e:
-        print(f"✗ 创建失败: {e}")
+        logger.error(f"✗ 创建失败: {e}")
         return False
     
     finally:

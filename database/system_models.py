@@ -1,7 +1,7 @@
+from .base import Base
 from sqlalchemy import Column, Integer, String, Text, Enum, DateTime, ForeignKey
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
-from .base import Base
 
 
 class SQLTemplate(Base):
