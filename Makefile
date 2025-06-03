@@ -6,7 +6,7 @@ DOCKERFILE_PATH = ./deploy/Dockerfile
 build:
 	docker build --build-arg USE_CHINA_MIRROR=true -f $(DOCKERFILE_PATH) -t $(BACKEND_IMAGE_NAME):$(BACKEND_IMAGE_TAG) .
 
-run:
+up:
 	cd deploy && docker-compose -f docker-compose.yaml up -d
 
 down:
