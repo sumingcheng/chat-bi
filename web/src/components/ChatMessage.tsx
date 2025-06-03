@@ -1,21 +1,19 @@
-import { Avatar, AvatarFallback } from './ui/Avatar';
-import { Button } from './ui/Button';
-import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from './ui/Tooltip';
-import { cn, formatDate } from '../lib/utils';
-import { 
-  HiUser, 
-  HiCpuChip, 
-  HiClipboard, 
-  HiCheck, 
-  HiCodeBracket,
+import ReactECharts from 'echarts-for-react'
+import { useState } from 'react'
+import {
   HiChartBarSquare,
-  HiTableCells,
+  HiCheck,
+  HiClipboard,
+  HiCodeBracket,
   HiEye,
-  HiSparkles
-} from 'react-icons/hi2';
-import type { ChatMessage as ChatMessageType } from '../store/chat';
-import { useState } from 'react';
-import ReactECharts from 'echarts-for-react';
+  HiSparkles,
+  HiUser
+} from 'react-icons/hi2'
+import { cn, formatDate } from '../lib/utils'
+import type { ChatMessage as ChatMessageType } from '../store/chat'
+import { Avatar, AvatarFallback } from './ui/Avatar'
+import { Button } from './ui/Button'
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from './ui/Tooltip'
 
 interface ChatMessageProps {
   message: ChatMessageType;
