@@ -15,11 +15,103 @@ import {
 } from 'react-icons/hi2';
 import type { ChatMessage as ChatMessageType } from '../store/chat';
 import { useState } from 'react';
+import ReactECharts from 'echarts-for-react';
 
 interface ChatMessageProps {
   message: ChatMessageType;
   isLast?: boolean;
 }
+
+// 生成ECharts配置
+const generateChartOption = (type: string, data: any[], config: any) => {
+  const baseOption = {
+    tooltip: {
+      trigger: 'item',
+      formatter: '{a} <br/>{b}: {c} ({d}%)'
+    },
+    legend: {
+      type: 'scroll',
+      orient: 'horizontal',
+      bottom: 0
+    }
+  };
+
+  switch (type) {
+    case 'bar':
+      return {
+        ...baseOption,
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow'
+          }
+        },
+        xAxis: {
+          type: 'category',
+          data: data.map(item => item[config.xField] || Object.values(item)[0])
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series: [{
+          name: config.yField || '数值',
+          type: 'bar',
+          data: data.map(item => item[config.yField] || Object.values(item)[1]),
+          itemStyle: {
+            color: '#3b82f6'
+          }
+        }]
+      };
+    
+    case 'line':
+      return {
+        ...baseOption,
+        tooltip: {
+          trigger: 'axis'
+        },
+        xAxis: {
+          type: 'category',
+          data: data.map(item => item[config.xField] || Object.values(item)[0])
+        },
+        yAxis: {
+          type: 'value'
+        },
+        series: [{
+          name: config.yField || '数值',
+          type: 'line',
+          data: data.map(item => item[config.yField] || Object.values(item)[1]),
+          smooth: true,
+          itemStyle: {
+            color: '#10b981'
+          }
+        }]
+      };
+    
+    case 'pie':
+      return {
+        ...baseOption,
+        series: [{
+          name: '占比',
+          type: 'pie',
+          radius: '60%',
+          data: data.map(item => ({
+            name: item[config.colorField] || Object.values(item)[0],
+            value: item[config.angleField] || Object.values(item)[1]
+          })),
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: 'rgba(0, 0, 0, 0.5)'
+            }
+          }
+        }]
+      };
+    
+    default:
+      return {};
+  }
+};
 
 export function ChatMessage({ message, isLast = false }: ChatMessageProps) {
   const [copied, setCopied] = useState(false);
@@ -105,32 +197,28 @@ export function ChatMessage({ message, isLast = false }: ChatMessageProps) {
                   </div>
                 </div>
 
-                {/* 查询结果统计 - 优化卡片设计 */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div className="bg-gradient-to-br from-blue-50 to-blue-100 dark:from-blue-900/20 dark:to-blue-800/20 border border-blue-200 dark:border-blue-700/50 rounded-xl p-4 shadow-sm">
-                    <div className="flex items-center space-x-3">
-                      <div className="p-2 bg-blue-500 rounded-lg">
-                        <HiTableCells className="h-4 w-4 text-white" />
-                      </div>
-                      <div>
-                        <p className="text-xs text-blue-600 dark:text-blue-400 font-medium">结果数量</p>
-                        <p className="text-lg font-bold text-blue-800 dark:text-blue-300">{message.data.record_count} 条</p>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="bg-gradient-to-br from-purple-50 to-purple-100 dark:from-purple-900/20 dark:to-purple-800/20 border border-purple-200 dark:border-purple-700/50 rounded-xl p-4 shadow-sm">
-                    <div className="flex items-center space-x-3">
-                      <div className="p-2 bg-purple-500 rounded-lg">
+                {/* 图表展示 */}
+                {message.data.chart_data.data.length > 0 && message.data.chart_data.type !== 'table' && (
+                  <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 dark:from-indigo-900/20 dark:to-indigo-800/20 border border-indigo-200 dark:border-indigo-700/50 rounded-xl overflow-hidden shadow-sm">
+                    <div className="flex items-center space-x-2 p-4 bg-gradient-to-r from-indigo-100 to-indigo-50 dark:from-indigo-800/30 dark:to-indigo-700/30 border-b border-indigo-200 dark:border-indigo-600/50">
+                      <div className="p-1.5 bg-indigo-500 rounded-md">
                         <HiChartBarSquare className="h-4 w-4 text-white" />
                       </div>
-                      <div>
-                        <p className="text-xs text-purple-600 dark:text-purple-400 font-medium">图表类型</p>
-                        <p className="text-lg font-bold text-purple-800 dark:text-purple-300 capitalize">{message.data.chart_data.type}</p>
-                      </div>
+                      <h4 className="text-sm font-semibold text-indigo-700 dark:text-indigo-300">数据可视化</h4>
+                    </div>
+                    <div className="p-4">
+                      <ReactECharts
+                        option={generateChartOption(
+                          message.data.chart_data.type,
+                          message.data.chart_data.data,
+                          message.data.chart_data.config
+                        )}
+                        style={{ height: '400px' }}
+                        opts={{ renderer: 'svg' }}
+                      />
                     </div>
                   </div>
-                </div>
+                )}
 
                 {/* 数据预览 - 优化表格设计 */}
                 {message.data.chart_data.data.length > 0 && (
@@ -139,12 +227,14 @@ export function ChatMessage({ message, isLast = false }: ChatMessageProps) {
                       <div className="p-1.5 bg-emerald-500 rounded-md">
                         <HiEye className="h-4 w-4 text-white" />
                       </div>
-                      <h4 className="text-sm font-semibold text-emerald-700 dark:text-emerald-300">数据预览</h4>
+                      <h4 className="text-sm font-semibold text-emerald-700 dark:text-emerald-300">
+                        数据预览 ({message.data.chart_data.data.length} 条记录)
+                      </h4>
                     </div>
-                    <div className="overflow-x-auto">
+                    <div className="max-h-96 overflow-auto scrollbar-thin scrollbar-thumb-emerald-300 scrollbar-track-emerald-100 dark:scrollbar-thumb-emerald-600 dark:scrollbar-track-emerald-800/20">
                       <table className="w-full text-xs">
-                        <thead>
-                          <tr className="bg-emerald-100/50 dark:bg-emerald-800/20">
+                        <thead className="sticky top-0 bg-emerald-100/80 dark:bg-emerald-800/40 backdrop-blur-sm">
+                          <tr>
                             {Object.keys(message.data.chart_data.data[0]).map((key) => (
                               <th key={key} className="text-left p-3 font-semibold text-emerald-700 dark:text-emerald-300 border-b border-emerald-200 dark:border-emerald-600/30">
                                 {key}
@@ -153,7 +243,7 @@ export function ChatMessage({ message, isLast = false }: ChatMessageProps) {
                           </tr>
                         </thead>
                         <tbody>
-                          {message.data.chart_data.data.slice(0, 3).map((row, index) => (
+                          {message.data.chart_data.data.map((row, index) => (
                             <tr key={index} className={cn(
                               "border-b border-emerald-100 dark:border-emerald-700/30 hover:bg-emerald-50 dark:hover:bg-emerald-800/10 transition-colors",
                               index % 2 === 0 ? "bg-white/50 dark:bg-emerald-900/5" : "bg-emerald-50/30 dark:bg-emerald-800/5"
@@ -167,13 +257,6 @@ export function ChatMessage({ message, isLast = false }: ChatMessageProps) {
                           ))}
                         </tbody>
                       </table>
-                      {message.data.chart_data.data.length > 3 && (
-                        <div className="p-3 text-center bg-emerald-50/50 dark:bg-emerald-800/10">
-                          <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium">
-                            ... 还有 {message.data.chart_data.data.length - 3} 条数据
-                          </p>
-                        </div>
-                      )}
                     </div>
                   </div>
                 )}
