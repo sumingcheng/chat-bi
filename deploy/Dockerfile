@@ -17,17 +17,15 @@ RUN if [ "$USE_CHINA_MIRROR" = "true" ]; then \
         pip install --no-cache-dir uv; \
     fi
 
-# 配置 uv 镜像源
-RUN if [ "$USE_CHINA_MIRROR" = "true" ]; then \
-        uv config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple && \
-        uv config set global.trusted-host pypi.tuna.tsinghua.edu.cn; \
-    fi
-
 # 复制依赖文件
 COPY pyproject.toml uv.lock ./
 
 # 使用 uv 同步依赖
-RUN uv sync
+RUN if [ "$USE_CHINA_MIRROR" = "true" ]; then \
+        uv sync --index-url https://pypi.tuna.tsinghua.edu.cn/simple; \
+    else \
+        uv sync; \
+    fi
 
 # 设置环境变量，将 .venv/bin 添加到 PATH
 ENV PATH="/chat-bi/.venv/bin:${PATH}"
