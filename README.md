@@ -108,6 +108,34 @@ uv sync
 python main.py
 ```
 
+```bash
+ ⚡ root@DESKTOP-AETE0Q9  /data/chat-bi   main  docker logs -f f341b3959a99
+INFO:     Will watch for changes in these directories: ['/chat-bi']
+INFO:     Uvicorn running on http://0.0.0.0:13000 (Press CTRL+C to quit)
+INFO:     Started reloader process [1] using StatReload
+INFO:     Started server process [8]
+INFO:     Waiting for application startup.
+2025-06-03 04:01:07 [INFO] app:57 - 🚀 应用启动中...
+2025-06-03 04:01:07 [INFO] app:58 - 📊 开始检查数据库表状态...
+2025-06-03 04:01:07 [INFO] app:39 - ✓ 业务数据库表 'category' 已存在
+2025-06-03 04:01:07 [INFO] app:39 - ✓ 业务数据库表 'customer' 已存在
+2025-06-03 04:01:07 [INFO] app:39 - ✓ 业务数据库表 'product' 已存在
+2025-06-03 04:01:07 [INFO] app:39 - ✓ 业务数据库表 'sales_order' 已存在
+2025-06-03 04:01:07 [INFO] app:39 - ✓ 业务数据库表 'order_item' 已存在
+2025-06-03 04:01:07 [INFO] app:39 - ✓ 业务数据库表 'sales' 已存在
+2025-06-03 04:01:07 [INFO] app:49 - ✓ 系统数据库表 'sql_templates' 已存在
+2025-06-03 04:01:07 [INFO] app:49 - ✓ 系统数据库表 'sql_template_params' 已存在
+2025-06-03 04:01:07 [INFO] app:49 - ✓ 系统数据库表 'query_history' 已存在
+2025-06-03 04:01:07 [INFO] app:63 - 📊 开始初始化数据库表...
+2025-06-03 04:01:07 [INFO] app:68 - 开始初始化业务数据库表: ['category', 'customer', 'product', 'sales_order', 'order_item', 'sales']
+2025-06-03 04:01:07 [INFO] app:71 - 业务数据库表初始化完成
+2025-06-03 04:01:07 [INFO] app:68 - 开始初始化系统数据库表: ['sql_templates', 'sql_template_params', 'query_history']
+2025-06-03 04:01:07 [INFO] app:71 - 系统数据库表初始化完成
+2025-06-03 04:01:07 [INFO] app:71 - ✅ 数据库表初始化完成
+2025-06-03 04:01:07 [INFO] app:72 - 🎉 Chat-BI API 启动成功！
+INFO:     Application startup complete.
+```
+
 #### 前端开发
 ```bash
 cd web
