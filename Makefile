@@ -1,5 +1,5 @@
 BACKEND_IMAGE_NAME ?= chat-bi-api
-BACKEND_IMAGE_TAG ?= v3.0.0
+BACKEND_IMAGE_TAG ?= v1.0.0
 
 DOCKERFILE_PATH = ./Dockerfile
 
@@ -12,6 +12,4 @@ run:
 down:
 	cd deploy && docker-compose -f docker-compose.yaml down
 
-ddl:
-	bash backend/bin/ddl_generate.sh
 
