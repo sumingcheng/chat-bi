@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   mysql:
     image: mysql:8.0
@@ -129,7 +131,3 @@ services:
 networks:
   chat-bi-network:
     driver: bridge
-
-volumes:
-  mysql_data:
-    driver: local
