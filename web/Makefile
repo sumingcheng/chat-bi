@@ -5,7 +5,7 @@ IMAGE_NAME=chat-bi-frontend
 build:
 	docker build -t $(IMAGE_NAME):$(VERSION) -f deploy/Dockerfile .
 
-run:
+up:
 	@cd deploy && docker-compose up -d
 
 down:
