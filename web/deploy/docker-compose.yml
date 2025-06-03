@@ -1,9 +1,0 @@
-version: '3.8'
-services:
-  chat-bi:
-    container_name: chat-bi
-    image: chat-bi:v1.0.0
-    network_mode: "host"  # 使用host网络模式
-    restart: unless-stopped
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf
