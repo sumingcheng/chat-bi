@@ -11,6 +11,12 @@ services:
       - '3306:3306'
     volumes:
       - ./mysql:/var/lib/mysql
+    command: >
+      --default-authentication-plugin=mysql_native_password
+      --skip-ssl
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --explicit_defaults_for_timestamp=true
     restart: unless-stopped
     networks:
       - chat-bi-network
@@ -123,3 +129,7 @@ services:
 networks:
   chat-bi-network:
     driver: bridge
+
+volumes:
+  mysql_data:
+    driver: local
