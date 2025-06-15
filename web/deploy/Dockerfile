@@ -18,8 +18,6 @@ RUN rm -rf ./*
 
 COPY --from=builder /app/dist ./
 
-COPY deploy/nginx.conf /etc/nginx/nginx.conf
-
 EXPOSE 30001
 
 CMD ["nginx", "-g", "daemon off;"]
