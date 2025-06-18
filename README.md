@@ -191,14 +191,6 @@ python test/run_test_data.py
 
 本项目采用 **Apache License 2.0** 许可证。详见 [LICENSE](LICENSE) 文件。
 
-## 🙏 致谢
-
-- **[Milvus](https://milvus.io/)** - 高性能向量数据库
-- **[FastAPI](https://fastapi.tiangolo.com/)** - 现代化Python Web框架  
-- **[React](https://reactjs.org/)** - 用户界面构建库
-- **[ECharts](https://echarts.apache.org/)** - 强大的数据可视化库
-- **[Tailwind CSS](https://tailwindcss.com/)** - 实用优先的CSS框架
-
 ## 📞 联系方式
 
 - **作者**：[sumingcheng](https://github.com/sumingcheng)
