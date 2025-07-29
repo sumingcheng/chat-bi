@@ -175,30 +175,6 @@ python test/run_test_data.py
 
 我们欢迎所有形式的贡献！
 
-### 参与方式
-
-1. **Fork 项目**：点击右上角 Fork 按钮
-2. **创建分支**：`git checkout -b feature/your-feature`
-3. **提交更改**：`git commit -am "Add your feature"`
-4. **推送分支**：`git push origin feature/your-feature`
-5. **提交PR**：创建 Pull Request
-
-### 开发规范
-
-- **代码规范**：遵循PEP 8（Python）和Prettier（TypeScript）
-- **提交信息**：使用语义化提交格式
-- **测试覆盖**：新功能需要对应的测试用例
-
-## 🐛 问题反馈
-
-- **GitHub Issues**：[提交Issue](https://github.com/sumingcheng/chat-bi/issues)
-- **功能建议**：[讨论区](https://github.com/sumingcheng/chat-bi/discussions)
-
-## 📄 许可证
-
-本项目采用 **Apache License 2.0** 许可证。详见 [LICENSE](LICENSE) 文件。
-
-## 📞 联系方式
 
 - **作者**：[sumingcheng](https://github.com/sumingcheng)
 - **邮箱**：通过GitHub Issues联系
