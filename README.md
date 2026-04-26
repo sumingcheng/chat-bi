@@ -44,17 +44,7 @@ LLM / Embedding Providers (OpenAI, DeepSeek, Ollama)
 
 ## Screenshots
 
-**Home**
-
-![Home](images/index.png)
-
-**Pie Chart**
-
-![Pie Chart](images/pie.png)
-
-**Line Chart**
-
-![Line Chart](images/line.png)
+<img width="3824" height="3150" alt="image" src="https://github.com/user-attachments/assets/a7c5f582-24af-4c83-acc8-ee8c562c2434" />
 
 ## Configuration
 
