@@ -44,7 +44,8 @@ LLM / Embedding Providers (OpenAI, DeepSeek, Ollama)
 
 ## Screenshots
 
-<img width="3824" height="3150" alt="image" src="https://github.com/user-attachments/assets/a7c5f582-24af-4c83-acc8-ee8c562c2434" />
+<img width="3828" height="2113" alt="image" src="https://github.com/user-attachments/assets/1d4ebe28-03e0-4a38-8934-4a0e582db487" />
+
 
 ## Configuration
 
