@@ -1,102 +1,67 @@
-import * as React from "react"
-import { useState, useRef, useEffect } from "react"
-import { Button } from "./ui/Button"
-import { Textarea } from "./ui/Textarea"
-import { cn } from "../lib/utils"
-import { HiPaperAirplane, HiStop } from "react-icons/hi2"
-import { useChatStore } from "../store/chat"
+import { useState, useRef, useEffect, type KeyboardEvent } from 'react'
+import { HiPaperAirplane } from 'react-icons/hi2'
+import { useTranslation } from 'react-i18next'
+import { cn } from '../lib/utils'
 
 interface ChatInputProps {
   onSubmit: (message: string) => void
   disabled?: boolean
-  className?: string
 }
 
-export function ChatInput({ onSubmit, disabled = false, className }: ChatInputProps) {
-  const [input, setInput] = useState("")
+export function ChatInput({ onSubmit, disabled = false }: ChatInputProps) {
+  const { t } = useTranslation()
+  const [input, setInput] = useState('')
   const textareaRef = useRef<HTMLTextAreaElement>(null)
-  const { isLoading } = useChatStore()
 
-  // 自动调整textarea高度
   useEffect(() => {
     if (textareaRef.current) {
-      textareaRef.current.style.height = "auto"
-      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 200)}px`
+      textareaRef.current.style.height = 'auto'
+      textareaRef.current.style.height = `${Math.min(textareaRef.current.scrollHeight, 160)}px`
     }
   }, [input])
 
   const handleSubmit = () => {
-    if (input.trim() && !disabled && !isLoading) {
+    if (input.trim() && !disabled) {
       onSubmit(input.trim())
-      setInput("")
+      setInput('')
     }
   }
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
       handleSubmit()
     }
   }
 
-  const handleStop = () => {
-    // 这里可以添加停止生成的逻辑
-    console.log("停止生成")
-  }
-
   return (
-    <div className={cn("border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60", className)}>
-      <div className="max-w-4xl mx-auto p-4">
-        <div className="relative">
-          <Textarea
+    <div className="bg-white dark:bg-zinc-950 shrink-0">
+      <div className="max-w-3xl mx-auto px-4 pb-4 pt-2">
+        <div className="relative flex items-end rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50 dark:bg-zinc-900 shadow-sm focus-within:border-indigo-300 dark:focus-within:border-indigo-700 focus-within:shadow-md focus-within:shadow-indigo-500/5 transition-[border-color,box-shadow,background-color] duration-200 ease-out">
+          <textarea
             ref={textareaRef}
             value={input}
-            onChange={(e) => setInput(e.target.value)}
+            onChange={e => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="输入您的问题... (Shift + Enter 换行)"
+            placeholder={t('chat.inputPlaceholder')}
             disabled={disabled}
-            className={cn(
-              "min-h-[56px] max-h-[200px] resize-none rounded-xl border-2 pr-12",
-              "focus:border-primary/50 focus:ring-0 focus:ring-offset-0",
-              "scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent"
-            )}
             rows={1}
+            className="flex-1 min-h-[44px] max-h-[160px] px-4 py-3 text-[13px] bg-transparent border-none outline-none resize-none text-zinc-800 dark:text-zinc-200 placeholder:text-zinc-400"
           />
-          
-          {/* 发送按钮 */}
-          <div className="absolute bottom-2 right-2">
-            {isLoading ? (
-              <Button
-                size="icon"
-                variant="ghost"
-                className="h-8 w-8 rounded-full bg-red-500 hover:bg-red-600 text-white"
-                onClick={handleStop}
-              >
-                <HiStop className="h-4 w-4" />
-              </Button>
-            ) : (
-              <Button
-                size="icon"
-                variant="ghost"
-                className={cn(
-                  "h-8 w-8 rounded-full",
-                  input.trim() && !disabled
-                    ? "bg-primary hover:bg-primary/90 text-primary-foreground"
-                    : "bg-muted text-muted-foreground cursor-not-allowed"
-                )}
-                onClick={handleSubmit}
-                disabled={!input.trim() || disabled || isLoading}
-              >
-                <HiPaperAirplane className="h-4 w-4" />
-              </Button>
+          <button
+            onClick={handleSubmit}
+            disabled={!input.trim() || disabled}
+            className={cn(
+              'p-2.5 m-1.5 rounded-xl transition-[background-color,box-shadow,color,opacity] duration-200 ease-out',
+              input.trim() && !disabled
+                ? 'bg-indigo-600 hover:bg-indigo-700 text-white shadow-sm shadow-indigo-600/15 hover:shadow-md hover:shadow-indigo-600/10'
+                : 'bg-zinc-200 dark:bg-zinc-800 text-zinc-400 cursor-not-allowed'
             )}
-          </div>
+          >
+            <HiPaperAirplane className="h-4 w-4" />
+          </button>
         </div>
-        
-        {/* 提示文本 */}
-        <div className="mt-2 text-xs text-muted-foreground text-center">
-          Chat-BI 可以协助您进行数据分析和查询。请详细描述您的需求。
-        </div>
+        <p className="text-center text-[10px] text-zinc-400 mt-2">{t('chat.inputHint')}</p>
       </div>
     </div>
   )

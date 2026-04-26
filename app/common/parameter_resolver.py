@@ -1,6 +1,6 @@
 import json
 from typing import Dict, Any, List, Tuple
-from app.common.openai_clinet import call_openai_api
+from app.common.llm_client import call_llm
 
 
 class ParameterResolver:
@@ -36,12 +36,10 @@ class ParameterResolver:
             }}
             """
 
-            response = await call_openai_api(
-                [
-                    {"role": "system", "content": "你是一个参数提取专家。只返回有效的JSON格式，不要添加任何其他内容。"},
-                    {"role": "user", "content": prompt},
-                ]
-            )
+            response = await call_llm([
+                {"role": "system", "content": "你是一个参数提取专家。只返回有效的JSON格式，不要添加任何其他内容。"},
+                {"role": "user", "content": prompt},
+            ])
 
             response = response.strip()
             if response.startswith("```json"):

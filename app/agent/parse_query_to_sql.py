@@ -1,11 +1,13 @@
 import logging
-from app.common.openai_clinet import call_openai_api
+
+from app.common.llm_client import call_llm
+from app.common.utils import extract_sql_from_response
 
 logger = logging.getLogger(__name__)
 
 
 async def parse_query_to_sql(user_prompt: str, schema_context: str = "") -> str:
-    """将用户自然语言问题转换为SQL查询"""
+    """将用户自然语言问题转换为 SQL 查询（带 schema 上下文）"""
     try:
         system_prompt = f"""
         你是一个SQL查询专家，请将用户的自然语言问题转换为SQL查询语句。
@@ -20,23 +22,14 @@ async def parse_query_to_sql(user_prompt: str, schema_context: str = "") -> str:
         4. 不要使用```sql```代码块标记
         5. 直接输出纯SQL语句
         """
-        
-        response = await call_openai_api([
+
+        response = await call_llm([
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": user_prompt}
+            {"role": "user", "content": user_prompt},
         ])
-        
-        response = response.strip()
-        if response.startswith("```sql"):
-            response = response[6:]
-        elif response.startswith("```"):
-            response = response[3:]
-        if response.endswith("```"):
-            response = response[:-3]
-        response = response.strip()
-        
-        return response
-        
+
+        return extract_sql_from_response(response)
+
     except Exception as e:
         logger.error(f"SQL生成失败: {e}")
         raise

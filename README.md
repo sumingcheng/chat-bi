@@ -1,188 +1,181 @@
 # Chat-BI
 
-## ✨ Project Overview
+[中文版本](README.zh-CN.md)
 
-Ask questions in plain language, and it automatically retrieves data from your database and creates charts like bar graphs and pie charts for you.
+Chat-BI is a natural-language analytics assistant that turns business questions into SQL, executes them against your database, and returns structured answers with charts and tables.
 
-⭐ If this project helps you, please give me a Star!
+## Highlights
 
-## 🏗️ System Architecture
+- Natural-language to SQL workflow backed by schema understanding and reusable SQL templates
+- FastAPI backend with MySQL + Milvus integration
+- Configurable LLM and embedding providers
+- Modern React frontend with conversation history, i18n, and light/dark theme switching
+- Local-first development flow using `uv` for Python and `pnpm` for the web app
 
+## Architecture
+
+```text
+Frontend (React + TypeScript + Vite)
+    ->
+Backend API (FastAPI)
+    ->
+Business DB (MySQL) + System DB (MySQL)
+    ->
+Vector Store (Milvus)
+    ->
+LLM / Embedding Providers (OpenAI, DeepSeek, Ollama)
 ```
-Frontend (React + TypeScript)
-    ↓
-Backend API (FastAPI + Python)
-    ↓
-┌─────────────────┬─────────────────┐
-│  Business DB    │   System DB     │
-│   (MySQL)       │   (MySQL)       │
-└─────────────────┴─────────────────┘
-    ↓
-Vector Database (Milvus)
-    ↓
-AI Services (OpenAI)
-```
 
-### Workflow
+## How It Works
 
-1. Question vectorization: Convert user's natural language questions into vectors to find similar SQL query templates in the database.
+1. The user asks a question in natural language.
+2. The system embeds the question and searches for matching SQL templates.
+3. If no good template exists, the backend generates SQL from schema context.
+4. The query runs against the business database with basic safety guards.
+5. The result is returned as natural-language text plus a chart/table payload.
+6. Newly generated templates can be stored for better future matching.
 
-2. Generate SQL queries: If no matching template is found, the system generates new SQL queries based on database structure and user questions.
+## Tech Stack
 
-3. Generate natural language answers: After executing SQL queries and retrieving data, the system converts structured data into easy-to-understand natural language responses.
+- Backend: Python 3.10+, FastAPI, SQLAlchemy, PyMilvus, OpenAI SDK
+- Frontend: React 19, TypeScript, Tailwind CSS, Zustand, ECharts, Vite
+- Storage: MySQL, Milvus
+- Package managers: `uv` (Python), `pnpm` (web)
 
-4. Generate descriptions for new templates: The system saves newly generated SQL as templates and creates brief descriptions for future precise matching.
+## Screenshots
 
-## 🛠️ Tech Stack
+**Home**
 
-**Backend**: Python 3.10+ · FastAPI · SQLAlchemy · PyMilvus · OpenAI
+![Home](images/index.png)
 
-**Frontend**: React 19 · TypeScript · Tailwind CSS · ECharts · Vite
+**Pie Chart**
 
-**Storage**: MySQL · Milvus
-
-## Demo Results
-
-### 📊 Data Visualization
-
-**Homepage**
-![Homepage](images/index.png)
-
-**Pie Chart**: Monthly customer registration distribution
 ![Pie Chart](images/pie.png)
 
-**Line Chart**: Sales trend analysis for the last 30 days
+**Line Chart**
+
 ![Line Chart](images/line.png)
 
-## 📦 Quick Start
+## Configuration
 
-### 🐳 Docker Deployment (Recommended)
+The backend now uses a YAML-first configuration model.
 
-#### 1. Clone Project
-
-```bash
-git clone https://github.com/sumingcheng/chat-bi.git
-cd chat-bi
-```
-
-#### 2. Configure Environment Variables
-
-Copy and edit the environment configuration file:
+1. Copy the example file:
 
 ```bash
-cp .env-temp .env
+cp config.example.yaml config.yaml
 ```
 
-Edit the `.env` file and configure necessary parameters:
+2. Edit `config.yaml` and fill in the values you need:
 
-```env
-# Debug mode
-DEBUG=False
+```yaml
+debug: false
 
-DB_HOST=mysql
-DB_PORT=3306
-DB_USER=root
-DB_PASSWORD=admin123456
-DB_NAME=chat_bi
-DB_SYS_NAME=chat_bi_system
+database:
+  host: localhost
+  port: 3306
+  user: root
+  password: admin123456
+  name: chat_bi
+  sys_name: chat_bi_system
 
+milvus:
+  host: localhost
+  port: 19530
 
-MILVUS_HOST=milvus-standalone
-MILVUS_PORT=19530
+llm:
+  provider: openai
+  model: gpt-4.1
+  api_key: your_api_key_here
+  base_url: ""
 
-
-OPENAI_API_KEY=sk-
-
-EMBEDDING_API_URL=http://172.19.221.125:11434/api/embeddings
-EMBEDDING_MODEL=bge-m3
+embedding:
+  provider: openai
+  model: text-embedding-3-small
+  dim: 1536
+  api_key: ""
+  api_url: ""
 ```
 
-#### 3. Start Services
+Environment variables can still override YAML values when needed.
+
+## Quick Start
+
+### Option A: Local Development
+
+#### Backend
 
 ```bash
-# Execute in root directory and web directory
-make build
-# Return to root directory
-make up
-```
-
-### 💻 Local Development
-
-#### Backend Development
-
-```bash
-# Install dependencies
 uv sync
-
-# Start backend service
-python main.py
+uv run python main.py
 ```
 
-```bash
- # Successful startup display
- ⚡ root@DESKTOP-AETE0Q9  /data/chat-bi   main  docker logs -f f341b3959a99
-INFO:     Will watch for changes in these directories: ['/chat-bi']
-INFO:     Uvicorn running on http://0.0.0.0:13000 (Press CTRL+C to quit)
-INFO:     Started reloader process [1] using StatReload
-INFO:     Started server process [8]
-INFO:     Waiting for application startup.
-2025-06-03 04:01:07 [INFO] app:57 - 🚀 Application starting...
-2025-06-03 04:01:07 [INFO] app:58 - 📊 Checking database table status...
-2025-06-03 04:01:07 [INFO] app:39 - ✓ Business database table 'category' exists
-2025-06-03 04:01:07 [INFO] app:39 - ✓ Business database table 'customer' exists
-2025-06-03 04:01:07 [INFO] app:39 - ✓ Business database table 'product' exists
-2025-06-03 04:01:07 [INFO] app:39 - ✓ Business database table 'sales_order' exists
-2025-06-03 04:01:07 [INFO] app:39 - ✓ Business database table 'order_item' exists
-2025-06-03 04:01:07 [INFO] app:39 - ✓ Business database table 'sales' exists
-2025-06-03 04:01:07 [INFO] app:49 - ✓ System database table 'sql_templates' exists
-2025-06-03 04:01:07 [INFO] app:49 - ✓ System database table 'sql_template_params' exists
-2025-06-03 04:01:07 [INFO] app:49 - ✓ System database table 'query_history' exists
-2025-06-03 04:01:07 [INFO] app:63 - 📊 Initializing database tables...
-2025-06-03 04:01:07 [INFO] app:68 - Initializing business database tables: ['category', 'customer', 'product', 'sales_order', 'order_item', 'sales']
-2025-06-03 04:01:07 [INFO] app:71 - Business database table initialization completed
-2025-06-03 04:01:07 [INFO] app:68 - Initializing system database tables: ['sql_templates', 'sql_template_params', 'query_history']
-2025-06-03 04:01:07 [INFO] app:71 - System database table initialization completed
-2025-06-03 04:01:07 [INFO] app:71 - ✅ Database table initialization completed
-2025-06-03 04:01:07 [INFO] app:72 - 🎉 Chat-BI API started successfully!
-INFO:     Application startup complete.
-```
+The API will be available at `http://localhost:13000`.
 
-#### Frontend Development
+#### Frontend
 
 ```bash
 cd web
-
-# Install dependencies
 pnpm install
-
-# Start development server
-pnpm run dev
+pnpm dev
 ```
 
-## 🌐 Access URLs
+The web app will be available at `http://localhost:5173`.
 
-After successful startup, you can access:
+### Option B: Start Only Local Infrastructure
 
-- **Frontend**: http://localhost:8888
-- **Backend API Documentation**: http://localhost:13000/docs
-- **Milvus Management Interface**: http://localhost:19000
-
-## 🧪 Test Data
-
-The project provides test data generation tools:
+If you want MySQL + Milvus locally and run the app processes on your host machine:
 
 ```bash
-# Generate test data
-python test/generate_test_data.py
+cd deploy
+docker-compose -f docker-compose-base.yaml up -d
+```
 
-# Run test queries
+This brings up:
+
+- MySQL: `localhost:3306`
+- Milvus: `localhost:19530`
+- Attu: `http://localhost:19000`
+
+### Option C: Full Docker Stack
+
+The repository also includes a full deployment flow:
+
+```bash
+make build
+make up
+```
+
+Notes:
+
+- The compose files live under `deploy/`.
+- The current backend runtime is YAML-first, but the provided deployment stack may still rely on environment-based wiring depending on how you deploy it.
+- For active development, local development with `config.yaml` is the most straightforward path.
+
+## Useful URLs
+
+- Frontend: `http://localhost:5173`
+- Backend API docs: `http://localhost:13000/docs`
+- Milvus Attu: `http://localhost:19000`
+
+## Example Questions
+
+- What can I query right now?
+- Show the daily sales trend for the last 30 days.
+- What are the top 10 products by sales volume?
+- Show the sales share by product category.
+- Which products have inventory below 10?
+
+## Test Data
+
+```bash
+python test/generate_test_data.py
 python test/run_test_data.py
 ```
 
-## 🤝 Contributing
+## Contributing
 
-We welcome all forms of contributions!
+Issues and pull requests are welcome.
 
-- **Author**: [sumingcheng](https://github.com/sumingcheng)
-- **Email**: Contact via GitHub Issues
-- **Project Homepage**: https://github.com/sumingcheng/chat-bi
+- Author: [sumingcheng](https://github.com/sumingcheng)
+- Repository: https://github.com/sumingcheng/chat-bi

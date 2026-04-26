@@ -1,6 +1,7 @@
 from fastapi import FastAPI, APIRouter
 from app.server.middleware.cors import mw_cors
 from app.server.api.query import query
+from app.server.api.llm import llm
 from app.database.base import init_business_db, init_system_db, business_engine, system_engine, get_business_models, get_system_models
 # 导入日志配置，确保使用自定义配置
 from app.config.app_log import logger
@@ -21,6 +22,7 @@ api_router = APIRouter(prefix="/api")
 
 # 将子路由器挂载到主API路由器
 api_router.include_router(query, tags=["查询"])
+api_router.include_router(llm, tags=["LLM"])
 
 # 将主API路由器注册到应用
 app.include_router(api_router)

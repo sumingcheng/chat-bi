@@ -16,4 +16,6 @@ dependencies = [
   "sqlparse>=0.5.3",
   "uvicorn>=0.34.3",
   "cryptography>=45.0.3",
+  "pyyaml>=6.0",
+  "greenlet>=3.2.2",
 ]
